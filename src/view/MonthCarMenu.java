@@ -3,7 +3,9 @@ package view;
 import controller.MonthCarController;
 import vo.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -396,9 +398,9 @@ public class MonthCarMenu {
             System.out.println(i + " : " + userVehicleList.get(i));
         }
         System.out.print("소유 차량중 어떤 차량을 기준으로 조회할까요? : ");
-        int select = sc.nextInt();
+        int userVehicleSelect = sc.nextInt();
         sc.nextLine();
-        UserVehicle userVehicle = userVehicleList.get(select);
+        UserVehicle userVehicle = userVehicleList.get(userVehicleSelect);
 
         System.out.println("주차장가능 주차장 리스트");
         for (int i = 0; i < parkingLotList.size(); i++) {
@@ -452,8 +454,9 @@ public class MonthCarMenu {
                 m.setRemainingParkingSpace(m.getRemainingParkingSpace() - 1);
                 parkingLotList.set(choice, m);
 
-                m.addParkingLotuserList(new UserInfo(user.getId(),user.getName(),user.getPhoneNumber(),userVehicle.getLicensePlateNumber(),userVehicle.getVehicleType(),userVehicle.getVehicleModel()));
+                m.addParkingLotuserList(new UserInfo(user.getId(),user.getName(),user.getPhoneNumber(),userVehicle.getLicensePlateNumber(),userVehicle.getVehicleType(),userVehicle.getVehicleModel(),LocalDateTime.now(),LocalDateTime.now().plusMonths(1)));
                 mc.updateTotalParkingLot();
+                mc.updateVoucherInfo(userVehicle,m);
 //                m.addParkingLotuserList(user);
                 System.out.println("구입이 완료 되었습니다.");
             } else if (parkingLotType == 2) {
@@ -462,8 +465,9 @@ public class MonthCarMenu {
                 d.setRegisterCount(d.getRegisterCount() + 1); // 자주식 주차장의 현재 등록 대수 1 증가
                 d.setRemainingParkingSpace(d.getRemainingParkingSpace() - 1); // 자주식 주차장의 잔여 주차 공간 1 감소
                 parkingLotList.set(choice, d); // 출력했던 parkingLotList의 선택한 주차장 인덱스를 업데이트 한다.
-                d.addParkingLotuserList(new UserInfo(user.getId(),user.getName(),user.getPhoneNumber(),userVehicle.getLicensePlateNumber(),userVehicle.getVehicleType(),userVehicle.getVehicleModel())); // 자주식 주차장의 등록된 유저의 정보를 추가한다.
+                d.addParkingLotuserList(new UserInfo(user.getId(),user.getName(),user.getPhoneNumber(),userVehicle.getLicensePlateNumber(),userVehicle.getVehicleType(),userVehicle.getVehicleModel(),LocalDateTime.now(),LocalDateTime.now().plusMonths(1))); // 자주식 주차장의 등록된 유저의 정보를 추가한다.
                 mc.updateTotalParkingLot();
+                mc.updateVoucherInfo(userVehicle,d);
                 System.out.println("구입이 완료 되었습니다.");
             }
         }
@@ -504,13 +508,54 @@ public class MonthCarMenu {
             }
         }
     }
-
+    /*
+     * 사용자가 구매한 월주차권의 정보를 보여주는 메뉴
+     * User 객체의 VoucherList를 가져와 출력한다.
+     * User클래스의 VoucherList 에는 user의 어떤 차량이 해당 월주차권을 구매했는지, 주차장 종류, 주차장 이름,
+     * 주소, 주차권 구입 날짜, 만기 날짜 를 출력해준다.
+     * 주차권 구입 날짜, 만기 날짜 필드를 생성해줘야한다.(VoucherList에 구입할 당시 해당 값들을 저장해줘야한다.
+     * */
     public void myVoucherInfo() {
+        User user = (User) mc.getUser();
+        ArrayList<VoucherInfo> voucherList = user.getVoucherList();
+        for (int i = 0; i < voucherList.size(); i++) {
+            VoucherInfo voucherInfo = voucherList.get(i);
+            ParkingLot parkingLot = voucherInfo.getParkingLot();
+            if(parkingLot instanceof MechanicalParkingLot){
+                System.out.printf("%d\t| 차량 : %s | [%s] | %s | 주소 : %s | 구입 날짜 : %s | 만료 날짜 : %s \n",i,voucherInfo.getUserVehicleInfo().getVehicleModel(),
+                        "기계식 주차장",voucherInfo.getParkingLot().getParkingLotName(),voucherInfo.getParkingLot().getParkingLotAddress(),voucherInfo.getVoucherPurchaseDate(),voucherInfo.getVoucherExpirationDate());
+            }else if(parkingLot instanceof DriveInParkingLot){
+                System.out.printf("%d\t| 차량 : %s | [%s] | %s | 주소 : %s | 구입 날짜 : %s | 만료 날짜 : %s \n",i,voucherInfo.getUserVehicleInfo().getVehicleModel(),
+                        "자주식 주차장",voucherInfo.getParkingLot().getParkingLotName(),voucherInfo.getParkingLot().getParkingLotAddress(),voucherInfo.getVoucherPurchaseDate(),voucherInfo.getVoucherExpirationDate());
+            }
+        }
 
     }
-
+    /*
+    * 비밀번호 변경, 등록 차량 확인, 차량 추가, 차량 삭제, 차량 정보 수정
+    * */
     public void myProfile() {
-
+        System.out.println("나의 프로필 메뉴");
+        System.out.println("1. 비밀번호 변경");
+        System.out.println("2. 전화번호 변경");
+        System.out.println("3. 등록 차량 확인");
+        System.out.println("4. 차량 추가");
+        System.out.println("5. 차량 삭제");
+        System.out.println("6. 차량 정보 수정");
+        System.out.println("9. 이전 메뉴로 돌아가기");
+        System.out.print("메뉴 번호 선택 : ");
+        int select = sc.nextInt();
+        sc.nextLine();
+        switch (select) {
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 9:
+                return;
+        }
     }
 
     public void remainingParkingTicket() {
@@ -563,23 +608,25 @@ public class MonthCarMenu {
                 System.out.println("기계식 주차장 이용자 리스트");
                 if(mUserList != null) {
                     for (int i = 0; i < mUserList.size(); i++) {
-                        System.out.printf("%d 사용자 이름 : %s | 전화번호 : %s | 차량 종류 : %s | 차량 모델명 : %s | 차량 번호 : %s\n",
+                        System.out.printf("%d 사용자 이름 : %s | 전화번호 : %s | 차량 종류 : %s | 차량 모델명 : %s | 차량 번호 : %s | 구입 날짜 : %s | 만료 날짜 : %s\n",
                                 i, mUserList.get(i).getName(), mUserList.get(i).getPhoneNumber(),
                                 mUserList.get(i).getVehicleType(),
-                                mUserList.get(i).getVehicleModel(), mUserList.get(i).getLicensePlateNumber());
+                                mUserList.get(i).getVehicleModel(), mUserList.get(i).getLicensePlateNumber(),
+                                mUserList.get(i).getVoucherPurchaseDate(), mUserList.get(i).getVoucherExpirationDate());
 
                     }
                 }else System.out.println("주차장을 이용하는 사용자가 없습니다");
             } else if (p instanceof DriveInParkingLot) {
                 d = (DriveInParkingLot) p;
-//                dUserList = d.getParkingLotUserList();
+                dUserList = d.getParkingLotUserList();
                 System.out.println("자주식 주차장 이용자 리스트");
                 if(dUserList != null) {
                     for (int i = 0; i < dUserList.size(); i++) {
-                        System.out.printf("%d 사용자 이름 : %s | 전화번호 : %s | 차량 종류 : %s | 차량 모델명 : %s | 차량 번호 : %s",
+                        System.out.printf("%d 사용자 이름 : %s | 전화번호 : %s | 차량 종류 : %s | 차량 모델명 : %s | 차량 번호 : %s | 구입 날짜 : %s | 만료 날짜 : %s\n",
                                 i, dUserList.get(i).getName(), dUserList.get(i).getPhoneNumber(),
                                 dUserList.get(i).getVehicleType(),
-                                dUserList.get(i).getVehicleModel(), dUserList.get(i).getLicensePlateNumber());
+                                dUserList.get(i).getVehicleModel(), dUserList.get(i).getLicensePlateNumber(),
+                                dUserList.get(i).getVoucherPurchaseDate(), dUserList.get(i).getVoucherExpirationDate());
                     }
                 }else System.out.println("주차장을 이용하는 사용자가 없습니다");
             }

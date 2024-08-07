@@ -20,14 +20,6 @@ public class MonthCarController {
                     }
                     return 2;
                 }
-            } else if (this.user instanceof Admin) {
-//                if(((Admin)user).getId().equals(id)){
-//                    if(((Admin)user).getPw().equals(pw)){
-//                        return 1;
-//                    }
-//                    return 2;
-//                }
-                return 3;
             }
         } catch (FileNotFoundException e) {
             return 3;
@@ -208,5 +200,18 @@ public class MonthCarController {
 
     public void updateTotalParkingLot() {
         this.tp.updateTotalParkingLot();
+    }
+    /*
+    * User 정보 최신화 지금 로그인한 user 객체에 VoucherInfoList에 해당 정보 추가
+    * */
+    public void updateVoucherInfo(UserVehicle userVehicle, ParkingLot parkingLot ){
+        User user = (User) this.user;
+        user.addVoucherList(userVehicle,parkingLot);
+        this.user = user;
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())));){
+            oos.writeObject(this.user);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
