@@ -20,9 +20,6 @@ public class TotalParkingLot implements Serializable {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-//        totalParkingLotList.add(new Admin("a", "a", "홍길동", "010-1234-1234", new MechanicalParkingLot(2800, 2500, 4800, 1800, 0)));
-//        totalParkingLotList.add(new Admin("b", "b", "고길동", "010-1234-1234", new DriveInParkingLot(2200,100,0)));
-//        totalParkingLotList.add(new Admin("c", "c", "차무식", "010-4321-1234", new DriveInParkingLot(2200,100,0), new MechanicalParkingLot(2600,2200,4800,1700,80)));
     }
 
     public TotalParkingLot(List totalParkingLotList) {

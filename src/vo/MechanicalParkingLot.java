@@ -18,7 +18,6 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
     }
 
     public MechanicalParkingLot(int width, int height, int length, int weight, int totalParkingSpace) {
-
         this.width = width;
         this.height = height;
         this.length = length;

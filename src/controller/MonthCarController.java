@@ -4,6 +4,7 @@ import vo.*;
 
 import java.io.*;
 import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class MonthCarController {
@@ -13,14 +14,14 @@ public class MonthCarController {
     public int signInUser(String id, String pw) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", id)))) {
             user = (UserMain) ois.readObject();
-            if (this.user instanceof User) {
-                if (((User) user).getId().equals(id)) {
-                    if (((User) user).getPw().equals(pw)) {
-                        return 1;
-                    }
-                    return 2;
+
+            if (((User) user).getId().equals(id)) {
+                if (((User) user).getPw().equals(pw)) {
+                    return 1;
                 }
+                return 2;
             }
+
         } catch (FileNotFoundException e) {
             return 3;
         } catch (IOException e) {
@@ -34,59 +35,43 @@ public class MonthCarController {
     public int signInAdmin(String id, String pw) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", id)))) {
             user = (UserMain) ois.readObject();
-            if (this.user instanceof User) {
-                return 3;
-//                if(((User)user).getId().equals(id)){
-//                    if(((User)user).getPw().equals(pw)){
-//                        return 1;
-//                    }
-//                    return 2;
-//                }
-            } else if (this.user instanceof Admin) {
-                Admin AdminUser = (Admin) this.user;
-                if (((Admin) user).getId().equals(id)) {
-                    if (((Admin) user).getPw().equals(pw)) {
-                        ArrayList<ParkingLot> parkingLotList = tp.getTotalParkingLotList();
-                        ArrayList<ParkingLot> adminParkingLotList = AdminUser.getParkingLot();
-                        MechanicalParkingLot adminMParkingLot = null;
-                        DriveInParkingLot adminDParkingLot = null;
-                        int adminMParkingLotNum = 0,adminDParkingLotNum =0;
-                            for (int i = 0; i < adminParkingLotList.size() ; i++) {
-                                if(adminParkingLotList.get(i) instanceof MechanicalParkingLot) {
-                                    adminMParkingLot = (MechanicalParkingLot) adminParkingLotList.get(i);
-                                    adminMParkingLotNum = i;
-                                }else if(adminParkingLotList.get(i) instanceof DriveInParkingLot) {
-                                    adminDParkingLot = (DriveInParkingLot) adminParkingLotList.get(i);
-                                    adminDParkingLotNum = i;
-                                }
-                            }
-//                        for (ParkingLot parkingLot : adminParkingLotList) {
-//                            if(parkingLot instanceof MechanicalParkingLot){
-//                                adminMParkingLot = (MechanicalParkingLot) parkingLot;
-//                            }else if(parkingLot instanceof DriveInParkingLot){
-//                                adminDParkingLot = (DriveInParkingLot) parkingLot;
-//                            }
-//                        }
-                        // totalparkingLotList 와 Admin 객체의 ParkingLot 필드 동기화
-                        for (ParkingLot parkingLot : parkingLotList) {
-                            if (parkingLot instanceof MechanicalParkingLot) {
-                                MechanicalParkingLot m = (MechanicalParkingLot) parkingLot;
+            Admin AdminUser = (Admin) this.user;
+            if (((Admin) user).getId().equals(id)) {
+                if (((Admin) user).getPw().equals(pw)) {
+                    ArrayList<ParkingLot> parkingLotList = tp.getTotalParkingLotList();
+                    ArrayList<ParkingLot> adminParkingLotList = AdminUser.getParkingLot();
+                    MechanicalParkingLot adminMParkingLot = null;
+                    DriveInParkingLot adminDParkingLot = null;
+                    int adminMParkingLotNum = 0, adminDParkingLotNum = 0;
+                    for (int i = 0; i < adminParkingLotList.size(); i++) {
+                        if (adminParkingLotList.get(i) instanceof MechanicalParkingLot) {
+                            adminMParkingLot = (MechanicalParkingLot) adminParkingLotList.get(i);
+                            adminMParkingLotNum = i;
+                        } else if (adminParkingLotList.get(i) instanceof DriveInParkingLot) {
+                            adminDParkingLot = (DriveInParkingLot) adminParkingLotList.get(i);
+                            adminDParkingLotNum = i;
+                        }
+                    }
+                    // totalparkingLotList 와 Admin 객체의 ParkingLot 필드 동기화
+                    for (ParkingLot parkingLot : parkingLotList) {
+                        if (parkingLot instanceof MechanicalParkingLot) {
+                            MechanicalParkingLot m = (MechanicalParkingLot) parkingLot;
 
-                                if(m.getParkingLotId() == adminMParkingLot.getParkingLotId()){
-                                    adminParkingLotList.set(adminMParkingLotNum, m);
-                                }
-                            }else if(parkingLot instanceof DriveInParkingLot) {
-                                DriveInParkingLot d = (DriveInParkingLot) parkingLot;
-                                if(d.getParkingLotId() == adminDParkingLot.getParkingLotId()){
-                                    adminParkingLotList.set(adminDParkingLotNum, d);
-                                }
+                            if (m.getParkingLotId() == adminMParkingLot.getParkingLotId()) {
+                                adminParkingLotList.set(adminMParkingLotNum, m);
+                            }
+                        } else if (parkingLot instanceof DriveInParkingLot) {
+                            DriveInParkingLot d = (DriveInParkingLot) parkingLot;
+                            if (d.getParkingLotId() == adminDParkingLot.getParkingLotId()) {
+                                adminParkingLotList.set(adminDParkingLotNum, d);
                             }
                         }
-                        return 1;
                     }
-                    return 2;
+                    return 1;
                 }
+                return 2;
             }
+
         } catch (FileNotFoundException e) {
             return 3;
         } catch (IOException e) {
@@ -96,13 +81,14 @@ public class MonthCarController {
         }
         return -1;
     }
-    public void logoutUser(){
+
+    public void logoutUser() {
         /*
-        * User의 [ID].txt 파일을 최신화
-        * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
-        * */
+         * User의 [ID].txt 파일을 최신화
+         * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
+         * */
         User userInfo = (User) this.user;
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", userInfo.getId())))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", userInfo.getId())))) {
             oos.writeObject(userInfo);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -110,13 +96,14 @@ public class MonthCarController {
             throw new RuntimeException(e);
         }
     }
-    public void logoutAdmin(){
+
+    public void logoutAdmin() {
         /*
          * Admin의 [ID].txt 파일을 최신화
          * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
          * */
         Admin adminInfo = (Admin) this.user;
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", adminInfo.getId())))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", adminInfo.getId())))) {
             oos.writeObject(adminInfo);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -201,15 +188,59 @@ public class MonthCarController {
     public void updateTotalParkingLot() {
         this.tp.updateTotalParkingLot();
     }
+
     /*
-    * User 정보 최신화 지금 로그인한 user 객체에 VoucherInfoList에 해당 정보 추가
-    * */
-    public void updateVoucherInfo(UserVehicle userVehicle, ParkingLot parkingLot ){
+     * User 정보 최신화 지금 로그인한 user 객체에 VoucherInfoList에 해당 정보 추가
+     * */
+    public void updateVoucherInfo(UserVehicle userVehicle, ParkingLot parkingLot) {
         User user = (User) this.user;
-        user.addVoucherList(userVehicle,parkingLot);
+        user.addVoucherList(userVehicle, parkingLot);
         this.user = user;
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())));){
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())));) {
             oos.writeObject(this.user);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    /*
+    * 월주차권 만기 날짜가 현재 날짜 이전이면 해당 월주차권을 사용자의 voucherList를 삭제하고,
+    * totalParkingLotList의 잔여 주차공간 ++ 하고, 사용중인 주차공간 -- 한 뒤 해당 객체를 저장한다.
+    * */
+    public void checkVoucherExpirationDate(){
+        User user = (User) this.user;
+        ArrayList<VoucherInfo> voucherList = user.getVoucherList();
+        for(int i=0; i<voucherList.size(); i++){
+            if(voucherList.get(i).getVoucherExpirationDate().isBefore(LocalDateTime.now())){
+                ArrayList<ParkingLot> totalParkingLotList = this.tp.getTotalParkingLotList();
+                for(int j=0; j<totalParkingLotList.size(); j++){
+                    // 전체 주차장 리스트에서 사용자가 가지고 있는 월주차권의 정보중 하나인 주차장 id 로 같은게 있는지 확인 후
+                    // 해당 잔여 주차공간은 +1, 사용중인 추자공간 -1
+                    if(totalParkingLotList.get(j).getParkingLotId() == voucherList.get(i).getParkingLot().getParkingLotId()){
+                        if(totalParkingLotList.get(j) instanceof MechanicalParkingLot){
+                            MechanicalParkingLot m = (MechanicalParkingLot) totalParkingLotList.get(j);
+                            m.setRemainingParkingSpace(m.getRemainingParkingSpace() + 1);
+                            m.setRegisterCount(m.getRegisterCount() - 1);
+                        }else if(totalParkingLotList.get(j) instanceof DriveInParkingLot){
+                            DriveInParkingLot d = (DriveInParkingLot) totalParkingLotList.get(j);
+                            d.setRemainingParkingSpace(d.getRemainingParkingSpace() + 1);
+                            d.setRegisterCount(d.getRegisterCount() - 1);
+                        }
+                    }
+                }
+                voucherList.remove(i); // 만료된 월주차권 user 객체에서 삭제
+                this.user = user; // user 객체 최신화
+                this.tp.setTotalParkingLotList(totalParkingLotList);
+            }
+        }
+        // User 객체 파일 최신화
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())))) {
+            oos.writeObject(this.user);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // totalParkingLotList 객체 파일 최신화
+        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/Users/jun/Documents/KH/MonthCar/ParkingLot/totalParkingLot.txt"))) {
+            oos.writeObject(this.tp.getTotalParkingLotList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
