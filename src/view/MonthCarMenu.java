@@ -199,8 +199,9 @@ public class MonthCarMenu {
             }
         }
     }
+
     // 관리자(프로필 관련 메뉴)
-    public void adminMyProfile(){
+    public void adminMyProfile() {
         while (true) {
             System.out.println("나의 프로필 메뉴");
             System.out.println("1. 비밀번호 변경");
@@ -653,66 +654,66 @@ public class MonthCarMenu {
 
     // 비밀번호 변경
     /*
-    * 현재 유저의 비밀번호를 입력받기 -> mc에서 기존 비밀번호와 동일한지 확인
-    * -> 새로운 비밀번호 입력 받기 -> mc 에서 입력받은 새로운 비밀번호로 수정 -> User 객체 최신화 하여 파일로 저장
-    * */
+     * 현재 유저의 비밀번호를 입력받기 -> mc에서 기존 비밀번호와 동일한지 확인
+     * -> 새로운 비밀번호 입력 받기 -> mc 에서 입력받은 새로운 비밀번호로 수정 -> User 객체 최신화 하여 파일로 저장
+     * */
     public void changePW() {
         System.out.println("비밀번호 변경 메뉴");
-        while (true){
+        while (true) {
             System.out.print("현재 비밀번호 : ");
             String oldPW = sc.nextLine();
-            if(mc.checkPW(oldPW)){
+            if (mc.checkPW(oldPW)) {
                 System.out.print("새로운 비밀번호 입력 : ");
                 String newPW = sc.nextLine();
-                if(mc.changePW(newPW)){
+                if (mc.changePW(newPW)) {
                     System.out.println("비밀번호 수정 성공!");
                     return;
-                }else System.out.println("비밀번호 수정에 실패하였습니다. 다시 시도해주세요.");
-            }else System.out.println("비밀번호가 틀렸습니다. 다시 입력해주세요.");
+                } else System.out.println("비밀번호 수정에 실패하였습니다. 다시 시도해주세요.");
+            } else System.out.println("비밀번호가 틀렸습니다. 다시 입력해주세요.");
         }
     }
 
     // 전화번호 변경
     /*
-    * 현재 등록된 핸드폰 번호 출력 -> 바꾸고자 하는 새로운 핸드폰 번호 입력 받기
-    * -> mc에 전달하여 전화번호 수정 -> User 객체 최신화 하여 파일로 저장
-    * */
+     * 현재 등록된 핸드폰 번호 출력 -> 바꾸고자 하는 새로운 핸드폰 번호 입력 받기
+     * -> mc에 전달하여 전화번호 수정 -> User 객체 최신화 하여 파일로 저장
+     * */
     public void changePhoneNumber() {
-        while (true){
-            System.out.println("현재 등록된 전화번호 : "+mc.getUser().getPhoneNumber());
+        while (true) {
+            System.out.println("현재 등록된 전화번호 : " + mc.getUser().getPhoneNumber());
             System.out.print("새로운 전화번호 : ");
             String newPhoneNumber = sc.nextLine();
-            if(mc.changePhoneNumber(newPhoneNumber)){
+            if (mc.changePhoneNumber(newPhoneNumber)) {
                 System.out.println("전화번호 수정 성공!");
                 return;
-            }else System.out.println("전화번호 수정에 실패하였습니다. 다시 시도해주세요.");
+            } else System.out.println("전화번호 수정에 실패하였습니다. 다시 시도해주세요.");
         }
     }
 
     // 등록 차량 확인
     /*
-    * User 객체에 등록된 차량 전달 받아 출력
-    * */
+     * User 객체에 등록된 차량 전달 받아 출력
+     * */
     public void printVehicle() {
         User user = (User) mc.getUser();
         LinkedList<UserVehicle> userVehicle = user.getVehicleList();
-        for (int i = 0; i <userVehicle.size() ; i++) {
-            System.out.printf("%d\t | %s\n",i, userVehicle.get(i));
+        for (int i = 0; i < userVehicle.size(); i++) {
+            System.out.printf("%d\t | %s\n", i, userVehicle.get(i));
         }
 
     }
 
     // 사용자 차량 추가 등록
     /*
-    * printVehicle() 메서드를 활용해서 출력 -> 새로운 차량 정보를 입력 받기
-    * -> mc 에서 userVehicleList에 추가 -> User 객체 최신화 하여 파일로 저장
-    * */
+     * printVehicle() 메서드를 활용해서 출력 -> 새로운 차량 정보를 입력 받기
+     * -> mc 에서 userVehicleList에 추가 -> User 객체 최신화 하여 파일로 저장
+     * */
     public void addVehicle() {
         String vehicleType, vehicleModel, licensePlateNumber;
         int carWeight, vehicleLength, vehicleSpan, vehicleHeight;
         char tuning;
-        while (true){
-        this.printVehicle(); // 현재 차량 리스트 출력
+        while (true) {
+            this.printVehicle(); // 현재 차량 리스트 출력
             System.out.print("차량 번호(띄어쓰기 x) : ");
             licensePlateNumber = sc.nextLine();
             System.out.print("차량 종류 : ");
@@ -729,7 +730,7 @@ public class MonthCarMenu {
             System.out.print("차량 높이 : ");
             vehicleHeight = sc.nextInt();
             sc.nextLine();
-            switch (mc.addVehicle(licensePlateNumber,vehicleType,vehicleModel,carWeight,vehicleLength,vehicleSpan,vehicleHeight)){
+            switch (mc.addVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight)) {
                 case -1:
                     System.out.println("이미 등록된 차량 번호입니다. 다시 확인후 시도해주세요.");
                     continue;
@@ -745,19 +746,104 @@ public class MonthCarMenu {
 
     // 사용자 등록 차량 삭제
     /*
-    * printVehicle() 메서드를 이용해 출력 -> 삭제할 차량 번호 입력 받기
-    * -> mc에서 해당 차량 번호로 대조하여 있으면 삭제 / 없으면 삭제에 실패했습니다 출력 후 다시 차량번호 입력 받기
-    * */
+     * printVehicle() 메서드를 이용해 출력 -> 삭제할 차량 번호 입력 받기
+     * -> mc에서 해당 차량 번호로 대조하여 있으면 삭제 / 없으면 삭제에 실패했습니다 출력 후 다시 차량번호 입력 받기
+     * */
     public void removeVehicle() {
-
+        while (true){
+            this.printVehicle();
+            System.out.print("삭제할 차량 번호 입력(띄어 쓰기 x) : ");
+            String licensePlateNumber = sc.nextLine();
+            if(mc.removeVehicle(licensePlateNumber)){
+                System.out.println(licensePlateNumber+ " 차량을 삭제 했습니다.");
+                return;
+            }else System.out.println(licensePlateNumber + "차량이 존재하지 않습니다. 확인후 다시 시도해주세요.");
+        }
     }
+
     // 등록된 차량 정보 수정
     /*
-    * printVehicle() 메서드를 이용해 출력 -> 수정하고자 하는 차량 선택
-    * -> mc에서 해당 차량 있는지 확인후 있을 경우 수정하고자 하는 정보 선택 -> mc 에서 해당 정보 수정 후
-    * User 객체 최신화 하여 파일로 저장
-    * */
+     * printVehicle() 메서드를 이용해 출력 -> 수정하고자 하는 차량 선택
+     * -> mc에서 해당 차량 있는지 확인후 있을 경우 수정하고자 하는 정보 선택 -> mc 에서 해당 정보 수정 후
+     * User 객체 최신화 하여 파일로 저장
+     * */
     public void modifyVehicle() {
-
+        this.printVehicle();
+        System.out.print("수정하고자 하는 차량 선택 : ");
+        int selectVehicleIndex = sc.nextInt();
+        sc.nextLine();
+        while(true){
+            System.out.println("수정하고자 하는 항목을 선택하세요.");
+            System.out.println("1. 차량 번호");
+            System.out.println("2. 차량 종류");
+            System.out.println("3. 차량 모델명");
+            System.out.println("4. 차량 무게");
+            System.out.println("5. 차량 전장");
+            System.out.println("6. 차량 전폭");
+            System.out.println("7. 차량 높이");
+            System.out.println("9. 이전 메뉴로 되돌아가기");
+            System.out.print("항목 선택 : ");
+            int select = sc.nextInt();
+            sc.nextLine();
+            switch (select){
+                case 1:
+                    System.out.print("수정할 차량 번호 (띄어쓰기 x) : ");
+                    String licensePlateNumber = sc.nextLine();
+                    if(mc.modifyVehicle(selectVehicleIndex,select,licensePlateNumber)){
+                        System.out.println("차량 번호 정보가 수정되었습니다.");
+                    }else System.out.println("차량 번호 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    break;
+                case 2:
+                    System.out.print("수정할 차량 종류 : ");
+                    String vehicleType = sc.nextLine();
+                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleType)){
+                        System.out.println("차량 종류 정보가 수정되었습니다.");
+                    }else System.out.println("차량 종류 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    break;
+                case 3:
+                    System.out.print("수정할 차량 모델명 : ");
+                    String vehicleModel = sc.nextLine();
+                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleModel)){
+                        System.out.println("차량 모델명 정보가 수정되었습니다.");
+                    }else System.out.println("차량 모델명 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    break;
+                case 4:
+                    System.out.print("수정할 차량 무게 : ");
+                    int vehicleWeight = sc.nextInt();
+                    sc.nextLine();
+                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleWeight)){
+                        System.out.println("차량 무게 정보가 수정되었습니다.");
+                    }else System.out.println("차량 무게 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    break;
+                case 5:
+                    System.out.print("수정할 차량 전장 : ");
+                    int vehicleLength = sc.nextInt();
+                    sc.nextLine();
+                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleLength)){
+                        System.out.println("차량 전장 정보가 수정되었습니다.");
+                    }else System.out.println("차량 전장 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    break;
+                case 6:
+                    System.out.print("수정할 차량 전폭 : ");
+                    int vehicleSpan = sc.nextInt();
+                    sc.nextLine();
+                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleSpan)){
+                        System.out.println("차량 전폭 정보가 수정되었습니다.");
+                    }else System.out.println("차량 전폭 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    break;
+                case 7:
+                    System.out.print("수정할 차량 높이 : ");
+                    int vehicleHeight = sc.nextInt();
+                    sc.nextLine();
+                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleHeight)){
+                        System.out.println("차량 높이 정보가 수정되었습니다.");
+                    }else System.out.println("차량 높이 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    break;
+                case 9:
+                    return;
+                default:
+                    System.out.println("잘 못 입력하셨습니다. 다시 입력해주세요.");
+            }
+        }
     }
 }

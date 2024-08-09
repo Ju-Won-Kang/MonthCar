@@ -85,8 +85,8 @@ public class UserVehicle implements Serializable {
     @Override
     public String toString() {
         return "차량 번호 : '" + licensePlateNumber + '\'' +
-                "차량 종류 : '" + vehicleType + '\'' +
-                ", 모델 : '" + vehicleModel + '\'' +
+                ", 차량 종류 : '" + vehicleType + '\'' +
+                ", 모델명 : '" + vehicleModel + '\'' +
                 ", 차량 무게 : " + carWeight + " (kg)"+
                 ", 차량 전장 : " + vehicleLength + " (mm)" +
                 ", 차량 전폭 : " + vehicleSpan + " (mm)" +

@@ -166,17 +166,17 @@ public class MonthCarController {
             User userInfo = (User) this.user;
             try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", userInfo.getId())))) {
                 oos.writeObject(userInfo);
-            }  catch (FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             return true;
-        }else if (this.user instanceof Admin) {
+        } else if (this.user instanceof Admin) {
             Admin adminInfo = (Admin) this.user;
             try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", adminInfo.getId())))) {
                 oos.writeObject(adminInfo);
-            }  catch (FileNotFoundException e) {
+            } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -272,21 +272,23 @@ public class MonthCarController {
     }
 
     public boolean checkPW(String pw) {
-        if(this.user.getPw().equals(pw)) {
+        if (this.user.getPw().equals(pw)) {
             return true;
         }
         return false;
     }
-    public boolean changePW(String newPW){
+
+    public boolean changePW(String newPW) {
         this.user.setPw(newPW);
         return this.userUpdate();
     }
 
-    public boolean changePhoneNumber(String phoneNumber){
+    public boolean changePhoneNumber(String phoneNumber) {
         this.user.setPhoneNumber(phoneNumber);
         return this.userUpdate();
     }
-    public int addVehicle(String licensePlateNumber, String vehicleType, String vehicleModel, int carWeight, int vehicleLength, int vehicleSpan, int vehicleHeight){
+
+    public int addVehicle(String licensePlateNumber, String vehicleType, String vehicleModel, int carWeight, int vehicleLength, int vehicleSpan, int vehicleHeight) {
         User user = (User) this.user;
         LinkedList<UserVehicle> userVehicleLinkedList = user.getVehicleList();
         for (UserVehicle userVehicle : userVehicleLinkedList) {
@@ -296,9 +298,63 @@ public class MonthCarController {
         }
         user.addVehicle(new UserVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight));
         this.user = user;
-        if(this.userUpdate()){
+        if (this.userUpdate()) {
             return 1;
-        }else return 0;
-
+        } else return 0;
+    }
+    public boolean removeVehicle(String licensePlateNumber) {
+        User user = (User) this.user;
+        LinkedList<UserVehicle> userVehicleLinkedList = user.getVehicleList();
+        for (UserVehicle userVehicle : userVehicleLinkedList) {
+            if (userVehicle.getLicensePlateNumber().equals(licensePlateNumber)) {
+                userVehicleLinkedList.remove(userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            }
+        }
+        return false;
+    }
+    public boolean modifyVehicle(int selectVehicleIndex,int select, Object modifyObject){
+        LinkedList<UserVehicle> userVehicleLinkedList = ((User) this.user).getVehicleList();
+        UserVehicle userVehicle = userVehicleLinkedList.get(selectVehicleIndex);
+        switch (select){
+            case 1:
+                userVehicle.setLicensePlateNumber((String)modifyObject);
+                userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            case 2:
+                userVehicle.setVehicleType((String)modifyObject);
+                userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            case 3:
+                userVehicle.setVehicleModel((String)modifyObject);
+                userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            case 4:
+                userVehicle.setCarWeight((int)modifyObject);
+                userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            case 5:
+                userVehicle.setVehicleLength((int)modifyObject);
+                userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            case 6:
+                userVehicle.setVehicleSpan((int)modifyObject);
+                userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            case 7:
+                userVehicle.setVehicleHeight((int)modifyObject);
+                userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
+                ((User) this.user).setVehicleList(userVehicleLinkedList);
+                return this.userUpdate();
+            default:
+                return false;
+        }
     }
 }
