@@ -215,9 +215,10 @@ public class MonthCarMenu {
             sc.nextLine();
             switch (select) {
                 case 1:
-                    changePW();
+                    this.changePW();
                     break;
                 case 2:
+                    this.changePhoneNumber();
                     break;
                 case 3:
                     break;
@@ -677,7 +678,15 @@ public class MonthCarMenu {
     * -> mc에 전달하여 전화번호 수정 -> User 객체 최신화 하여 파일로 저장
     * */
     public void changePhoneNumber() {
-
+        while (true){
+            System.out.println("현재 등록된 전화번호 : "+mc.getUser().getPhoneNumber());
+            System.out.print("새로운 전화번호 : ");
+            String newPhoneNumber = sc.nextLine();
+            if(mc.changePhoneNumber(newPhoneNumber)){
+                System.out.println("전화번호 수정 성공!");
+                return;
+            }else System.out.println("전화번호 수정에 실패하였습니다. 다시 시도해주세요.");
+        }
     }
 
     // 등록 차량 확인
@@ -685,6 +694,11 @@ public class MonthCarMenu {
     * User 객체에 등록된 차량 전달 받아 출력
     * */
     public void printVehicle() {
+        User user = (User) mc.getUser();
+        LinkedList<UserVehicle> userVehicle = user.getVehicleList();
+        for (int i = 0; i <userVehicle.size() ; i++) {
+            System.out.printf("%d\t | %s\n",i, userVehicle.get(i));
+        }
 
     }
 
@@ -697,27 +711,36 @@ public class MonthCarMenu {
         String vehicleType, vehicleModel, licensePlateNumber;
         int carWeight, vehicleLength, vehicleSpan, vehicleHeight;
         char tuning;
-        System.out.print("차량 번호(띄어쓰기 x) : ");
-        licensePlateNumber = sc.nextLine();
-        System.out.print("차량 종류 : ");
-        vehicleType = sc.nextLine();
-        System.out.print("차량 모델명 : ");
-        vehicleModel = sc.nextLine();
-        // 아래 값들은 DB로 관리할 수 있음
-        System.out.print("차량 무게 : ");
-        carWeight = sc.nextInt();
-        System.out.print("차량 전장 : ");
-        vehicleLength = sc.nextInt();
-        System.out.print("차량 전폭 : ");
-        vehicleSpan = sc.nextInt();
-        System.out.print("차량 높이 : ");
-        vehicleHeight = sc.nextInt();
-        sc.nextLine();
-
-        // 차량 추가
-//        if (mc.userUpdate(new UserVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight))) {
-//            System.out.println("차량 추가가 정상적으로 처리 되었습니다.\n");
-//        }
+        while (true){
+        this.printVehicle(); // 현재 차량 리스트 출력
+            System.out.print("차량 번호(띄어쓰기 x) : ");
+            licensePlateNumber = sc.nextLine();
+            System.out.print("차량 종류 : ");
+            vehicleType = sc.nextLine();
+            System.out.print("차량 모델명 : ");
+            vehicleModel = sc.nextLine();
+            // 아래 값들은 DB로 관리할 수 있음
+            System.out.print("차량 무게 : ");
+            carWeight = sc.nextInt();
+            System.out.print("차량 전장 : ");
+            vehicleLength = sc.nextInt();
+            System.out.print("차량 전폭 : ");
+            vehicleSpan = sc.nextInt();
+            System.out.print("차량 높이 : ");
+            vehicleHeight = sc.nextInt();
+            sc.nextLine();
+            switch (mc.addVehicle(licensePlateNumber,vehicleType,vehicleModel,carWeight,vehicleLength,vehicleSpan,vehicleHeight)){
+                case -1:
+                    System.out.println("이미 등록된 차량 번호입니다. 다시 확인후 시도해주세요.");
+                    continue;
+                case 0:
+                    System.out.println("차량 추가 등록에 실패했습니다. 다시 시도해주세요.");
+                    continue;
+                case 1:
+                    System.out.println("차량 추가 등록이 정상적으로 처리 되었습니다.");
+                    return;
+            }
+        }
     }
 
     // 사용자 등록 차량 삭제

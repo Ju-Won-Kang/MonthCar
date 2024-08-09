@@ -6,6 +6,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class MonthCarController {
     private TotalParkingLot tp = new TotalParkingLot();
@@ -271,29 +272,33 @@ public class MonthCarController {
     }
 
     public boolean checkPW(String pw) {
-        if (this.user instanceof User) {
-            User user = (User) this.user;
-            if (user.getPw().equals(pw)) {
-                return true; // 비밀번호가 동일할 경우 true return
-            }
-        } else if (this.user instanceof Admin) {
-            Admin admin = (Admin) this.user;
-            if (admin.getPw().equals(pw)) {
-                return true;
-            }
+        if(this.user.getPw().equals(pw)) {
+            return true;
         }
         return false;
     }
     public boolean changePW(String newPW){
-        if(this.user instanceof User){
-            User user = (User) this.user;
-            user.setPw(newPW);
-            return this.userUpdate();
-        }else if(this.user instanceof Admin){
-            Admin admin = (Admin) this.user;
-            admin.setPw(newPW);
-            return this.userUpdate();
+        this.user.setPw(newPW);
+        return this.userUpdate();
+    }
+
+    public boolean changePhoneNumber(String phoneNumber){
+        this.user.setPhoneNumber(phoneNumber);
+        return this.userUpdate();
+    }
+    public int addVehicle(String licensePlateNumber, String vehicleType, String vehicleModel, int carWeight, int vehicleLength, int vehicleSpan, int vehicleHeight){
+        User user = (User) this.user;
+        LinkedList<UserVehicle> userVehicleLinkedList = user.getVehicleList();
+        for (UserVehicle userVehicle : userVehicleLinkedList) {
+            if (userVehicle.getLicensePlateNumber().equals(licensePlateNumber)) {
+                return -1; // 이미 등록된 차량 번호
+            }
         }
-        return false;
+        user.addVehicle(new UserVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight));
+        this.user = user;
+        if(this.userUpdate()){
+            return 1;
+        }else return 0;
+
     }
 }
