@@ -5,7 +5,6 @@ import vo.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -108,7 +107,7 @@ public class MonthCarMenu {
                     myVoucherInfo();
                     break;
                 case 4:
-                    myProfile();
+                    userMyProfile();
                     break;
                 case 9:
                     sc.close();
@@ -128,7 +127,7 @@ public class MonthCarMenu {
             System.out.println("월차 관리자 서비스 메뉴");
             System.out.println("1. 잔여 월주차권 조회");
             System.out.println("2. 주차장 사용자 리스트 조회");
-            System.out.println("3. ");
+            System.out.println("3. 나의 프로필");
             System.out.println("4. ");
             System.out.println("9. 프로그램 종료");
             System.out.print("메뉴 번호 : ");
@@ -143,7 +142,7 @@ public class MonthCarMenu {
                     printParkingLotUserList();
                     break;
                 case 3:
-
+                    adminMyProfile();
                     break;
                 case 4:
 
@@ -159,34 +158,80 @@ public class MonthCarMenu {
         }
     }
 
-    // 사용자 차량 추가
-    public void addVehicle() {
-        String vehicleType, vehicleModel, licensePlateNumber;
-        int carWeight, vehicleLength, vehicleSpan, vehicleHeight;
-        char tuning;
-        System.out.print("차량 번호(띄어쓰기 x) : ");
-        licensePlateNumber = sc.nextLine();
-        System.out.print("차량 종류 : ");
-        vehicleType = sc.nextLine();
-        System.out.print("차량 모델명 : ");
-        vehicleModel = sc.nextLine();
-        // 아래 값들은 DB로 관리할 수 있음
-        System.out.print("차량 무게 : ");
-        carWeight = sc.nextInt();
-        System.out.print("차량 전장 : ");
-        vehicleLength = sc.nextInt();
-        System.out.print("차량 전폭 : ");
-        vehicleSpan = sc.nextInt();
-        System.out.print("차량 높이 : ");
-        vehicleHeight = sc.nextInt();
-        sc.nextLine();
-
-        // 차량 추가
-        if (mc.userUpdate(new UserVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight))) {
-            System.out.println("차량 추가가 정상적으로 처리 되었습니다.\n");
+    /*
+     * 비밀번호 변경, 등록 차량 확인, 차량 추가, 차량 삭제, 차량 정보 수정
+     * */
+    // 사용자(프로필 관련 메뉴)
+    public void userMyProfile() {
+        while (true) {
+            System.out.println("나의 프로필 메뉴");
+            System.out.println("1. 비밀번호 변경");
+            System.out.println("2. 전화번호 변경");
+            System.out.println("3. 등록 차량 확인");
+            System.out.println("4. 차량 추가");
+            System.out.println("5. 차량 삭제");
+            System.out.println("6. 차량 정보 수정");
+            System.out.println("9. 이전 메뉴로 돌아가기");
+            System.out.print("메뉴 번호 선택 : ");
+            int select = sc.nextInt();
+            sc.nextLine();
+            switch (select) {
+                case 1:
+                    changePW();
+                    break;
+                case 2:
+                    changePhoneNumber();
+                    break;
+                case 3:
+                    printVehicle();
+                    break;
+                case 4:
+                    addVehicle();
+                    break;
+                case 5:
+                    removeVehicle();
+                    break;
+                case 6:
+                    modifyVehicle();
+                    break;
+                case 9:
+                    return;
+            }
         }
     }
-
+    // 관리자(프로필 관련 메뉴)
+    public void adminMyProfile(){
+        while (true) {
+            System.out.println("나의 프로필 메뉴");
+            System.out.println("1. 비밀번호 변경");
+            System.out.println("2. 전화번호 변경");
+            System.out.println("3. 주차장 상세 정보 조회");
+            System.out.println("4. 주차장 추가");
+            System.out.println("5. 주차장 정보 수정");
+            System.out.println("6. 주차장 삭제");
+            System.out.println("9. 이전 메뉴로 돌아가기");
+            System.out.print("메뉴 번호 선택 : ");
+            int select = sc.nextInt();
+            sc.nextLine();
+            switch (select) {
+                case 1:
+                    changePW();
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 9:
+                    return;
+            }
+        }
+    }
 
     // 사용자 로그인 메뉴
     public boolean userSignInMenu() {
@@ -257,6 +302,42 @@ public class MonthCarMenu {
                     }
             }
         }
+    }
+
+    // 사용자 회원가입 메뉴
+    public void userSignUp() {
+        String id, pw, name, phoneNumber, vehicleType, vehicleModel, licensePlateNumber;
+        int carWeight, vehicleLength, vehicleSpan, vehicleHeight;
+
+        System.out.println("회원가입을 위해 정보를 입력해주세요.");
+        System.out.print("아이디 : ");
+        id = sc.nextLine();
+        System.out.print("패스워드 : ");
+        pw = sc.nextLine();
+        System.out.print("이름 : ");
+        name = sc.nextLine();
+        System.out.print("전화번호 : ");
+        phoneNumber = sc.nextLine();
+
+        System.out.println("차량 정보 입력");
+        System.out.print("차량 번호(띄어쓰기 x) : ");
+        licensePlateNumber = sc.nextLine();
+        System.out.print("차량 종류 : ");
+        vehicleType = sc.nextLine();
+        System.out.print("차량 모델명 : ");
+        vehicleModel = sc.nextLine();
+        System.out.print("차량 무게 : ");
+        carWeight = sc.nextInt();
+        System.out.print("차량 전장 : ");
+        vehicleLength = sc.nextInt();
+        System.out.print("차량 전폭 : ");
+        vehicleSpan = sc.nextInt();
+        System.out.print("차량 높이 : ");
+        vehicleHeight = sc.nextInt();
+        sc.nextLine();
+        mc.signUpUser(new User(id, pw, name, phoneNumber, new UserVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight)));
+
+        System.out.println("회원 가입이 정상적으로 처리되었습니다.");
     }
 
     // 관리자 회원가입 메뉴
@@ -346,44 +427,7 @@ public class MonthCarMenu {
         }
     }
 
-    // 사용자 회원가입 메뉴
-    public void userSignUp() {
-        String id, pw, name, phoneNumber, vehicleType, vehicleModel, licensePlateNumber;
-        int carWeight, vehicleLength, vehicleSpan, vehicleHeight;
-
-        System.out.println("회원가입을 위해 정보를 입력해주세요.");
-        System.out.print("아이디 : ");
-        id = sc.nextLine();
-        System.out.print("패스워드 : ");
-        pw = sc.nextLine();
-        System.out.print("이름 : ");
-        name = sc.nextLine();
-        System.out.print("전화번호 : ");
-        phoneNumber = sc.nextLine();
-
-        System.out.println("차량 정보 입력");
-        System.out.print("차량 번호(띄어쓰기 x) : ");
-        licensePlateNumber = sc.nextLine();
-        System.out.print("차량 종류 : ");
-        vehicleType = sc.nextLine();
-        System.out.print("차량 모델명 : ");
-        vehicleModel = sc.nextLine();
-        System.out.print("차량 무게 : ");
-        carWeight = sc.nextInt();
-        System.out.print("차량 전장 : ");
-        vehicleLength = sc.nextInt();
-        System.out.print("차량 전폭 : ");
-        vehicleSpan = sc.nextInt();
-        System.out.print("차량 높이 : ");
-        vehicleHeight = sc.nextInt();
-        sc.nextLine();
-        mc.signUpUser(new User(id, pw, name, phoneNumber, new UserVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight)));
-
-        System.out.println("회원 가입이 정상적으로 처리되었습니다.");
-    }
-
     // 사용자 월주차권 구입
-    // 사용자가 월주차권 구입 완료시 User 객체 정보에 월주차권 내역 저장해야함
     public void purchaseTicket() {
         ArrayList<ParkingLot> parkingLotList = mc.getTp().getTotalParkingLotList();
 
@@ -469,13 +513,13 @@ public class MonthCarMenu {
         }
     }
 
+    /*
+     * 본인 소유 차량과 주차장 제한 조건을 비교해서 가능한 주차장들만 출력해주는 메서드
+     * 잔여 주차공간을 합해서 출력해준다.
+     * ex) 자주식 주차장 잔여공간 + 기계식 주차장 잔여 공간
+     * */
     public void printParkingLot() {
-        /*
-         * 본인 소유 차량과 주차장 제한 조건을 비교해서 가능한 주차장들만 출력해주는 메서드
-         * 잔여 주차공간을 합해서 출력해준다.
-         * ex) 자주식 주차장 잔여공간 + 기계식 주차장 잔여 공간
-         *
-         * */
+
 
         ArrayList<ParkingLot> tmp = mc.getTp().getTotalParkingLotList();
         User user = mc.getUser();
@@ -532,38 +576,11 @@ public class MonthCarMenu {
     }
 
     /*
-     * 비밀번호 변경, 등록 차량 확인, 차량 추가, 차량 삭제, 차량 정보 수정
+     * MonthCarController(mc)에서 주차장에서 발행하는 월주차권(잔여 주차공간 만큼)
+     * TotalParkingLot 에서 최신화된 주차장 정보를 가져온다.
+     * 관리자가 관리하는 주차장을 식별하여 Admin 정보를 최신화 한다.
      * */
-    public void myProfile() {
-        System.out.println("나의 프로필 메뉴");
-        System.out.println("1. 비밀번호 변경");
-        System.out.println("2. 전화번호 변경");
-        System.out.println("3. 등록 차량 확인");
-        System.out.println("4. 차량 추가");
-        System.out.println("5. 차량 삭제");
-        System.out.println("6. 차량 정보 수정");
-        System.out.println("9. 이전 메뉴로 돌아가기");
-        System.out.print("메뉴 번호 선택 : ");
-        int select = sc.nextInt();
-        sc.nextLine();
-        switch (select) {
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-            case 9:
-                return;
-        }
-    }
-
     public void remainingParkingTicket() {
-        /*
-         * MonthCarController(mc)에서 주차장에서 발행하는 월주차권(잔여 주차공간 만큼)
-         * TotalParkingLot 에서 최신화된 주차장 정보를 가져온다.
-         * 관리자가 관리하는 주차장을 식별하여 Admin 정보를 최신화 한다.
-         * */
         Admin user = mc.getAdmin();
         ArrayList<ParkingLot> parkingLot = user.getParkingLot();
         int remainingMParkingTickets = 0, remainingDInParkingTickets = 0;
@@ -587,12 +604,13 @@ public class MonthCarMenu {
     }
 
     // 기본 틀 만 작성됨 수정 필요(사용자가 선택한 차량 식별할 수 있는 번호)
+    /*
+     * 사용자가 월주차권 구매(선택)시 등록된 전체 주차장 객체의 해당 주차장의 registerCount 를 증가시키고
+     * (주차권 구매 사용자를 식별하기 위해서는 각 주차 티켓마다 고유 번호 부여(남은 주차장 수로 관리 가능할 듯)
+     * */
+    // Admin 유저가 관리하는 주차장 정보를 가져온다
     public void printParkingLotUserList() {
-        /*
-         * 사용자가 월주차권 구매(선택)시 등록된 전체 주차장 객체의 해당 주차장의 registerCount 를 증가시키고
-         * (주차권 구매 사용자를 식별하기 위해서는 각 주차 티켓마다 고유 번호 부여(남은 주차장 수로 관리 가능할 듯)
-         * */
-        // Admin 유저가 관리하는 주차장 정보를 가져온다
+
         Admin admin = (Admin) mc.getAdmin();
         ArrayList<ParkingLot> parkingLot = admin.getParkingLot();
         MechanicalParkingLot m = null;
@@ -630,5 +648,93 @@ public class MonthCarMenu {
                 } else System.out.println("주차장을 이용하는 사용자가 없습니다");
             }
         }
+    }
+
+    // 비밀번호 변경
+    /*
+    * 현재 유저의 비밀번호를 입력받기 -> mc에서 기존 비밀번호와 동일한지 확인
+    * -> 새로운 비밀번호 입력 받기 -> mc 에서 입력받은 새로운 비밀번호로 수정 -> User 객체 최신화 하여 파일로 저장
+    * */
+    public void changePW() {
+        System.out.println("비밀번호 변경 메뉴");
+        while (true){
+            System.out.print("현재 비밀번호 : ");
+            String oldPW = sc.nextLine();
+            if(mc.checkPW(oldPW)){
+                System.out.print("새로운 비밀번호 입력 : ");
+                String newPW = sc.nextLine();
+                if(mc.changePW(newPW)){
+                    System.out.println("비밀번호 수정 성공!");
+                    return;
+                }else System.out.println("비밀번호 수정에 실패하였습니다. 다시 시도해주세요.");
+            }else System.out.println("비밀번호가 틀렸습니다. 다시 입력해주세요.");
+        }
+    }
+
+    // 전화번호 변경
+    /*
+    * 현재 등록된 핸드폰 번호 출력 -> 바꾸고자 하는 새로운 핸드폰 번호 입력 받기
+    * -> mc에 전달하여 전화번호 수정 -> User 객체 최신화 하여 파일로 저장
+    * */
+    public void changePhoneNumber() {
+
+    }
+
+    // 등록 차량 확인
+    /*
+    * User 객체에 등록된 차량 전달 받아 출력
+    * */
+    public void printVehicle() {
+
+    }
+
+    // 사용자 차량 추가 등록
+    /*
+    * printVehicle() 메서드를 활용해서 출력 -> 새로운 차량 정보를 입력 받기
+    * -> mc 에서 userVehicleList에 추가 -> User 객체 최신화 하여 파일로 저장
+    * */
+    public void addVehicle() {
+        String vehicleType, vehicleModel, licensePlateNumber;
+        int carWeight, vehicleLength, vehicleSpan, vehicleHeight;
+        char tuning;
+        System.out.print("차량 번호(띄어쓰기 x) : ");
+        licensePlateNumber = sc.nextLine();
+        System.out.print("차량 종류 : ");
+        vehicleType = sc.nextLine();
+        System.out.print("차량 모델명 : ");
+        vehicleModel = sc.nextLine();
+        // 아래 값들은 DB로 관리할 수 있음
+        System.out.print("차량 무게 : ");
+        carWeight = sc.nextInt();
+        System.out.print("차량 전장 : ");
+        vehicleLength = sc.nextInt();
+        System.out.print("차량 전폭 : ");
+        vehicleSpan = sc.nextInt();
+        System.out.print("차량 높이 : ");
+        vehicleHeight = sc.nextInt();
+        sc.nextLine();
+
+        // 차량 추가
+//        if (mc.userUpdate(new UserVehicle(licensePlateNumber, vehicleType, vehicleModel, carWeight, vehicleLength, vehicleSpan, vehicleHeight))) {
+//            System.out.println("차량 추가가 정상적으로 처리 되었습니다.\n");
+//        }
+    }
+
+    // 사용자 등록 차량 삭제
+    /*
+    * printVehicle() 메서드를 이용해 출력 -> 삭제할 차량 번호 입력 받기
+    * -> mc에서 해당 차량 번호로 대조하여 있으면 삭제 / 없으면 삭제에 실패했습니다 출력 후 다시 차량번호 입력 받기
+    * */
+    public void removeVehicle() {
+
+    }
+    // 등록된 차량 정보 수정
+    /*
+    * printVehicle() 메서드를 이용해 출력 -> 수정하고자 하는 차량 선택
+    * -> mc에서 해당 차량 있는지 확인후 있을 경우 수정하고자 하는 정보 선택 -> mc 에서 해당 정보 수정 후
+    * User 객체 최신화 하여 파일로 저장
+    * */
+    public void modifyVehicle() {
+
     }
 }

@@ -7,8 +7,7 @@ public class ParkingLot implements Serializable {
     private int parkingLotId; // 주차장 고유번호
     private String parkingLotName; // 주차장 이름
     private String parkingLotAddress; // 주차장 주소
-//    private int numberOfParkingSpaces; // 잔여 주차면 수
-//    private ArrayList parkingLotType;
+
 
     public ParkingLot() {
     }

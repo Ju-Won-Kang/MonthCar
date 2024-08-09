@@ -71,7 +71,6 @@ public class MonthCarController {
                 }
                 return 2;
             }
-
         } catch (FileNotFoundException e) {
             return 3;
         } catch (IOException e) {
@@ -82,11 +81,11 @@ public class MonthCarController {
         return -1;
     }
 
+    /*
+     * User의 [ID].txt 파일을 최신화
+     * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
+     * */
     public void logoutUser() {
-        /*
-         * User의 [ID].txt 파일을 최신화
-         * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
-         * */
         User userInfo = (User) this.user;
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", userInfo.getId())))) {
             oos.writeObject(userInfo);
@@ -97,11 +96,11 @@ public class MonthCarController {
         }
     }
 
+    /*
+     * Admin의 [ID].txt 파일을 최신화
+     * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
+     * */
     public void logoutAdmin() {
-        /*
-         * Admin의 [ID].txt 파일을 최신화
-         * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
-         * */
         Admin adminInfo = (Admin) this.user;
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", adminInfo.getId())))) {
             oos.writeObject(adminInfo);
@@ -161,17 +160,41 @@ public class MonthCarController {
         }
     }
 
-    public boolean userUpdate(UserVehicle vehicle) {
+    public boolean userUpdate() {
         if (this.user instanceof User) {
-            ((User) this.user).addVehicle(vehicle);
-            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())))) {
-                oos.writeObject(this.user);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+            User userInfo = (User) this.user;
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", userInfo.getId())))) {
+                oos.writeObject(userInfo);
+            }  catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+            return true;
+        }else if (this.user instanceof Admin) {
+            Admin adminInfo = (Admin) this.user;
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", adminInfo.getId())))) {
+                oos.writeObject(adminInfo);
+            }  catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return true;
         }
-        return true;
+        return false;
     }
+//    public boolean userUpdate(UserVehicle vehicle) {
+//        if (this.user instanceof User) {
+//            ((User) this.user).addVehicle(vehicle);
+//            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())))) {
+//                oos.writeObject(this.user);
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
+//        }
+//        return true;
+//    }
 
     public TotalParkingLot getTp() {
         return tp;
@@ -202,25 +225,26 @@ public class MonthCarController {
             throw new RuntimeException(e);
         }
     }
+
     /*
-    * 월주차권 만기 날짜가 현재 날짜 이전이면 해당 월주차권을 사용자의 voucherList를 삭제하고,
-    * totalParkingLotList의 잔여 주차공간 ++ 하고, 사용중인 주차공간 -- 한 뒤 해당 객체를 저장한다.
-    * */
-    public void checkVoucherExpirationDate(){
+     * 월주차권 만기 날짜가 현재 날짜 이전이면 해당 월주차권을 사용자의 voucherList를 삭제하고,
+     * totalParkingLotList의 잔여 주차공간 ++ 하고, 사용중인 주차공간 -- 한 뒤 해당 객체를 저장한다.
+     * */
+    public void checkVoucherExpirationDate() {
         User user = (User) this.user;
         ArrayList<VoucherInfo> voucherList = user.getVoucherList();
-        for(int i=0; i<voucherList.size(); i++){
-            if(voucherList.get(i).getVoucherExpirationDate().isBefore(LocalDateTime.now())){
+        for (int i = 0; i < voucherList.size(); i++) {
+            if (voucherList.get(i).getVoucherExpirationDate().isBefore(LocalDateTime.now())) {
                 ArrayList<ParkingLot> totalParkingLotList = this.tp.getTotalParkingLotList();
-                for(int j=0; j<totalParkingLotList.size(); j++){
+                for (int j = 0; j < totalParkingLotList.size(); j++) {
                     // 전체 주차장 리스트에서 사용자가 가지고 있는 월주차권의 정보중 하나인 주차장 id 로 같은게 있는지 확인 후
                     // 해당 잔여 주차공간은 +1, 사용중인 추자공간 -1
-                    if(totalParkingLotList.get(j).getParkingLotId() == voucherList.get(i).getParkingLot().getParkingLotId()){
-                        if(totalParkingLotList.get(j) instanceof MechanicalParkingLot){
+                    if (totalParkingLotList.get(j).getParkingLotId() == voucherList.get(i).getParkingLot().getParkingLotId()) {
+                        if (totalParkingLotList.get(j) instanceof MechanicalParkingLot) {
                             MechanicalParkingLot m = (MechanicalParkingLot) totalParkingLotList.get(j);
                             m.setRemainingParkingSpace(m.getRemainingParkingSpace() + 1);
                             m.setRegisterCount(m.getRegisterCount() - 1);
-                        }else if(totalParkingLotList.get(j) instanceof DriveInParkingLot){
+                        } else if (totalParkingLotList.get(j) instanceof DriveInParkingLot) {
                             DriveInParkingLot d = (DriveInParkingLot) totalParkingLotList.get(j);
                             d.setRemainingParkingSpace(d.getRemainingParkingSpace() + 1);
                             d.setRegisterCount(d.getRegisterCount() - 1);
@@ -233,16 +257,43 @@ public class MonthCarController {
             }
         }
         // User 객체 파일 최신화
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())))) {
             oos.writeObject(this.user);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         // totalParkingLotList 객체 파일 최신화
-        try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/Users/jun/Documents/KH/MonthCar/ParkingLot/totalParkingLot.txt"))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/Users/jun/Documents/KH/MonthCar/ParkingLot/totalParkingLot.txt"))) {
             oos.writeObject(this.tp.getTotalParkingLotList());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean checkPW(String pw) {
+        if (this.user instanceof User) {
+            User user = (User) this.user;
+            if (user.getPw().equals(pw)) {
+                return true; // 비밀번호가 동일할 경우 true return
+            }
+        } else if (this.user instanceof Admin) {
+            Admin admin = (Admin) this.user;
+            if (admin.getPw().equals(pw)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean changePW(String newPW){
+        if(this.user instanceof User){
+            User user = (User) this.user;
+            user.setPw(newPW);
+            return this.userUpdate();
+        }else if(this.user instanceof Admin){
+            Admin admin = (Admin) this.user;
+            admin.setPw(newPW);
+            return this.userUpdate();
+        }
+        return false;
     }
 }
