@@ -11,7 +11,7 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
     private int totalParkingSpace; // 총 주차 공간
     private int registerCount; // 현재 등록 대수
     private int remainingParkingSpace; // 잔여 주차 공간
-    private int parkingTicketIdentifier; // 주차권 식별을 위한 고유 번호
+    private int mechanicalParkingIdentificationNumber; // 기계식 주차장 식별을 위한 고유 번호
     private ArrayList<UserInfo> parkingLotUserList; // 주차장 이용자 리스트
 
     public MechanicalParkingLot() {
@@ -27,8 +27,16 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
         this.remainingParkingSpace = totalParkingSpace - registerCount;
     }
 
+    public int getMechanicalParkingIdentificationNumber() {
+        return mechanicalParkingIdentificationNumber;
+    }
+
+    public void setMechanicalParkingIdentificationNumber(int mechanicalParkingIdentificationNumber) {
+        this.mechanicalParkingIdentificationNumber = mechanicalParkingIdentificationNumber;
+    }
+
     public MechanicalParkingLot(int parkingLotId, String parkingLotName, String parkingLotAddress,
-                                int width, int height, int length, int weight, int totalParkingSpace, int registerCount) {
+                                int width, int height, int length, int weight, int totalParkingSpace, int registerCount, int mechanicalParkingIdentificationNumber) {
         super(parkingLotId, parkingLotName, parkingLotAddress);
         this.width = width;
         this.height = height;
@@ -37,6 +45,7 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
         this.totalParkingSpace = totalParkingSpace;
         this.registerCount = registerCount;
         this.remainingParkingSpace = totalParkingSpace - registerCount;
+        this.mechanicalParkingIdentificationNumber = mechanicalParkingIdentificationNumber;
     }
 
     public int getWidth() {
@@ -95,13 +104,6 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
         this.remainingParkingSpace = remainingParkingSpace;
     }
 
-    public int getParkingTicketIdentifier() {
-        return parkingTicketIdentifier;
-    }
-
-    public void setParkingTicketIdentifier(int parkingTicketIdentifier) {
-        this.parkingTicketIdentifier = parkingTicketIdentifier;
-    }
 
     public ArrayList<UserInfo> getParkingLotUserList() {
         return parkingLotUserList;
@@ -110,8 +112,9 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
     public void setParkingLotUserList(ArrayList<UserInfo> parkingLotUserList) {
         this.parkingLotUserList = parkingLotUserList;
     }
+
     public void addParkingLotuserList(UserInfo user) {
-        if(parkingLotUserList == null) {
+        if (parkingLotUserList == null) {
             parkingLotUserList = new ArrayList<>();
         }
         parkingLotUserList.add(user);
@@ -119,14 +122,13 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString() + "MechanicalParkingLot{" +
-                "width=" + width +
-                ", height=" + height +
-                ", length=" + length +
-                ", weight=" + weight +
-                ", totalParkingSpace=" + totalParkingSpace +
-                ", registerCount=" + registerCount +
-                ", remainingParkingSpace=" + remainingParkingSpace +
-                '}';
+        return "[기계식 주차장] | " + super.toString() + "\n\t| **제한 사항**\t" +
+                "폭 : " + width + " 이하" +
+                ", 높이 : " + height + "(mm) 이하" +
+                ", 전장 : " + length + "(mm) 이하" +
+                ", 무게 : " + weight + "(kg) 이하" +
+                ", 전체 주차 공간 : " + totalParkingSpace +
+                ", 현재 등록 대수 : " + registerCount + "대" +
+                ", 잔여 주차 공간 : " + remainingParkingSpace + "대\n";
     }
 }

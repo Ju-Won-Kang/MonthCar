@@ -8,18 +8,28 @@ public class DriveInParkingLot extends ParkingLot implements Serializable {
     private int totalParkingSpace; // 총 주차 공간
     private int registerCount; // 현재 등록 대수
     private int remainingParkingSpace; // 잔여 주차 공간
+    private int driveInParkingIdentificationNumber; // 자주식 주차장 식별을 위한 고유 번호
     private ArrayList<UserInfo> parkingLotUserList; // 주차장 이용자 리스트
 
     public DriveInParkingLot() {
     }
 
-    public DriveInParkingLot(int parkingLotId,String parkingLotName, String parkingLotAddress,
-                             int height, int totalParkingSpace, int registerCount) {
+    public int getDriveInParkingIdentificationNumber() {
+        return driveInParkingIdentificationNumber;
+    }
+
+    public void setDriveInParkingIdentificationNumber(int driveInParkingIdentificationNumber) {
+        this.driveInParkingIdentificationNumber = driveInParkingIdentificationNumber;
+    }
+
+    public DriveInParkingLot(int parkingLotId, String parkingLotName, String parkingLotAddress,
+                             int height, int totalParkingSpace, int registerCount, int driveInParkingIdentificationNumber) {
         super(parkingLotId, parkingLotName, parkingLotAddress);
         this.height = height;
         this.totalParkingSpace = totalParkingSpace;
         this.registerCount = registerCount;
         this.remainingParkingSpace = totalParkingSpace - registerCount;
+        this.driveInParkingIdentificationNumber = driveInParkingIdentificationNumber;
     }
 
     public int getHeight() {
@@ -61,8 +71,9 @@ public class DriveInParkingLot extends ParkingLot implements Serializable {
     public void setParkingLotUserList(ArrayList<UserInfo> parkingLotUserList) {
         this.parkingLotUserList = parkingLotUserList;
     }
-    public void addParkingLotuserList(UserInfo user){
-        if(parkingLotUserList == null){
+
+    public void addParkingLotuserList(UserInfo user) {
+        if (parkingLotUserList == null) {
             parkingLotUserList = new ArrayList<>();
         }
         parkingLotUserList.add(user);
@@ -70,11 +81,10 @@ public class DriveInParkingLot extends ParkingLot implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString() + "DriveInParkingLot{" +
-                "height=" + height +
-                ", totalParkingSpace=" + totalParkingSpace +
-                ", registerCount=" + registerCount +
-                ", remainingParkingSpace=" + remainingParkingSpace +
-                '}';
+        return "[자주식 주차장] | " + super.toString() + "\n\t| **제한 사항**\t" +
+                "높이 : " + height + " 이하" +
+                ", 전체 주차 공간 : " + totalParkingSpace + "대" +
+                ", 현재 등록 대수 : " + registerCount + "대" +
+                ", 잔여 주차 공간 : " + remainingParkingSpace + "대\n";
     }
 }

@@ -127,8 +127,8 @@ public class MonthCarMenu {
             System.out.println("월차 관리자 서비스 메뉴");
             System.out.println("1. 잔여 월주차권 조회");
             System.out.println("2. 주차장 사용자 리스트 조회");
-            System.out.println("3. 나의 프로필");
-            System.out.println("4. ");
+            System.out.println("3. 주차권 관리");
+            System.out.println("4. 나의 프로필");
             System.out.println("9. 프로그램 종료");
             System.out.print("메뉴 번호 : ");
             select = sc.nextInt();
@@ -142,10 +142,10 @@ public class MonthCarMenu {
                     printParkingLotUserList();
                     break;
                 case 3:
-                    adminMyProfile();
+                    manageParkingVoucher();
                     break;
                 case 4:
-
+                    adminMyProfile();
                     break;
                 case 9:
                     sc.close();
@@ -222,12 +222,16 @@ public class MonthCarMenu {
                     this.changePhoneNumber();
                     break;
                 case 3:
+                    this.viewParkingLotDetails();
                     break;
                 case 4:
+                    addParkingLot();
                     break;
                 case 5:
+                    this.editParkingLotInfo();
                     break;
                 case 6:
+                    this.removeParkingLot();
                     break;
                 case 9:
                     return;
@@ -361,6 +365,7 @@ public class MonthCarMenu {
         parkingLotAddress = sc.nextLine();
 
         while (true) {
+            int width, dheight, mheight, length, weight, mtotalParkingSpace, mregisterCount, dtotalParkingSpace, dregisterCount;
             System.out.println("주차장 종류를 입력해주세요");
             System.out.println("1. 기계식 주차장");
             System.out.println("2. 자주식 주차장");
@@ -370,40 +375,41 @@ public class MonthCarMenu {
             sc.nextLine();
             switch (select) {
                 case 1:
-                    int width, height, length, weight, totalParkingSpace, registerCount, mtotalParkingSpace, mregisterCount;
+
                     System.out.println("기계식 주차장의 제한 사항");
                     System.out.print("제한 너비 : ");
                     width = sc.nextInt();
                     System.out.print("제한 높이 : ");
-                    height = sc.nextInt();
+                    mheight = sc.nextInt();
                     System.out.print("제한 길이 : ");
                     length = sc.nextInt();
                     System.out.print("제한 무게 : ");
                     weight = sc.nextInt();
                     System.out.print("총 주차 면 수 : ");
-                    totalParkingSpace = sc.nextInt();
+                    mtotalParkingSpace = sc.nextInt();
                     System.out.print("현재 등록 대수 : ");
-                    registerCount = sc.nextInt();
+                    mregisterCount = sc.nextInt();
+
                     mc.signUpAdmin(new Admin(id, pw, name, phoneNumber, new MechanicalParkingLot(mc.getTp().getParkingLotCount(), parkingLotName,
-                            parkingLotAddress, width, height, length, weight, totalParkingSpace, registerCount)));
+                            parkingLotAddress, width, mheight, length, weight, mtotalParkingSpace, mregisterCount,mc.getTp().getMechanicalParkingLotCount() + 1)));
                     return;
                 case 2:
                     System.out.println("자주식 주차장의 제한 사항");
                     System.out.print("제한 높이 : ");
-                    height = sc.nextInt();
+                    dheight = sc.nextInt();
                     System.out.print("총 주차 면 수 : ");
-                    totalParkingSpace = sc.nextInt();
+                    dtotalParkingSpace = sc.nextInt();
                     System.out.print("현재 등록 대수 : ");
-                    registerCount = sc.nextInt();
+                    dregisterCount = sc.nextInt();
                     mc.signUpAdmin(new Admin(id, pw, name, phoneNumber, new DriveInParkingLot(mc.getTp().getParkingLotCount(), parkingLotName,
-                            parkingLotAddress, height, totalParkingSpace, registerCount)));
+                            parkingLotAddress, dheight, dtotalParkingSpace, dregisterCount, mc.getTp().getMechanicalParkingLotCount() + 1)));
                     return;
                 case 3:
                     System.out.println("기계식 주차장의 제한 사항");
                     System.out.print("제한 너비 : ");
                     width = sc.nextInt();
                     System.out.print("제한 높이 : ");
-                    height = sc.nextInt();
+                    mheight = sc.nextInt();
                     System.out.print("제한 길이 : ");
                     length = sc.nextInt();
                     System.out.print("제한 무게 : ");
@@ -414,14 +420,14 @@ public class MonthCarMenu {
                     mregisterCount = sc.nextInt();
                     System.out.println("자주식 주차장의 제한 사항");
                     System.out.print("제한 높이 : ");
-                    height = sc.nextInt();
+                    dheight = sc.nextInt();
                     System.out.print("총 주차 면 수 : ");
-                    totalParkingSpace = sc.nextInt();
+                    dtotalParkingSpace = sc.nextInt();
                     System.out.print("현재 등록 대수 : ");
-                    registerCount = sc.nextInt();
+                    dregisterCount = sc.nextInt();
                     mc.signUpAdmin(new Admin(id, pw, name, phoneNumber,
-                            new DriveInParkingLot(mc.getTp().getParkingLotCount(), parkingLotName, parkingLotAddress, height, totalParkingSpace, registerCount),
-                            new MechanicalParkingLot(mc.getTp().getParkingLotCount(), parkingLotName, parkingLotAddress, width, height, length, weight, mtotalParkingSpace, mregisterCount)));
+                            new DriveInParkingLot(mc.getTp().getParkingLotCount(), parkingLotName, parkingLotAddress, dheight, dtotalParkingSpace, dregisterCount,mc.getTp().getDrivingParkingLotCount() + 1),
+                            new MechanicalParkingLot(mc.getTp().getParkingLotCount(), parkingLotName, parkingLotAddress, width, mheight, length, weight, mtotalParkingSpace, mregisterCount, mc.getTp().getMechanicalParkingLotCount() + 1)));
                     return;
                 default:
                     System.out.println("잘 못 입력하셨습니다. 다시 입력해주세요");
@@ -449,16 +455,16 @@ public class MonthCarMenu {
             ParkingLot parkingLot = parkingLotList.get(i);
             if (parkingLot instanceof MechanicalParkingLot) {
                 MechanicalParkingLot m = (MechanicalParkingLot) parkingLot;
-                if (userVehicle.getVehicleHeight() < m.getHeight() &&
-                        userVehicle.getVehicleLength() < m.getLength() &&
-                        userVehicle.getVehicleSpan() < m.getWidth() &&
-                        userVehicle.getCarWeight() < m.getWeight() &&
+                if (userVehicle.getVehicleHeight() <= m.getHeight() &&
+                        userVehicle.getVehicleLength() <= m.getLength() &&
+                        userVehicle.getVehicleSpan() <= m.getWidth() &&
+                        userVehicle.getCarWeight() <= m.getWeight() &&
                         m.getRemainingParkingSpace() != 0) {
                     System.out.printf("%d | [기계식 주차장]\t [주차장 이름] : %s | [주소] : %s | [%d]자리 남았습니다.\n", i, m.getParkingLotName(), m.getParkingLotAddress(), m.getRemainingParkingSpace());
                 }
             } else if (parkingLot instanceof DriveInParkingLot) {
                 DriveInParkingLot d = (DriveInParkingLot) parkingLot;
-                if (userVehicle.getVehicleHeight() < d.getHeight() &&
+                if (userVehicle.getVehicleHeight() <= d.getHeight() &&
                         d.getRemainingParkingSpace() != 0) {
 
                     System.out.printf("%d | [자주식 주차장]\t [주차장 이름] : %s | [주소] : %s | [%d]자리 남았습니다.\n", i, d.getParkingLotName(), d.getParkingLotAddress(), d.getRemainingParkingSpace());
@@ -536,16 +542,16 @@ public class MonthCarMenu {
         for (ParkingLot lot : tmp) {
             if (lot instanceof MechanicalParkingLot) {
                 MechanicalParkingLot mp = (MechanicalParkingLot) lot;
-                if (userVehicle.getVehicleHeight() < mp.getHeight() &&
-                        userVehicle.getVehicleLength() < mp.getLength() &&
-                        userVehicle.getVehicleSpan() < mp.getWidth() &&
-                        userVehicle.getCarWeight() < mp.getWeight() &&
+                if (userVehicle.getVehicleHeight() <= mp.getHeight() &&
+                        userVehicle.getVehicleLength() <= mp.getLength() &&
+                        userVehicle.getVehicleSpan() <= mp.getWidth() &&
+                        userVehicle.getCarWeight() <= mp.getWeight() &&
                         mp.getRemainingParkingSpace() != 0) {
                     System.out.printf("[기계식 주차장]\t [주차장 이름] : %s | [주소] : %s | [%d]자리 남았습니다.\n", mp.getParkingLotName(), mp.getParkingLotAddress(), mp.getRemainingParkingSpace());
                 }
             } else if (lot instanceof DriveInParkingLot) {
                 DriveInParkingLot dp = (DriveInParkingLot) lot;
-                if (userVehicle.getVehicleHeight() < dp.getHeight() &&
+                if (userVehicle.getVehicleHeight() <= dp.getHeight() &&
                         dp.getRemainingParkingSpace() != 0) {
                     System.out.printf("[자주식 주차장]\t [주차장 이름] : %s | [주소] : %s | [%d]자리 남았습니다.\n", dp.getParkingLotName(), dp.getParkingLotAddress(), dp.getRemainingParkingSpace());
                 }
@@ -584,7 +590,7 @@ public class MonthCarMenu {
      * */
     public void remainingParkingTicket() {
         Admin user = mc.getAdmin();
-        ArrayList<ParkingLot> parkingLot = user.getParkingLot();
+        ArrayList<ParkingLot> parkingLot = user.getParkingLotList();
         int remainingMParkingTickets = 0, remainingDInParkingTickets = 0;
         String parkingLotName = "";
         for (ParkingLot p : parkingLot) {
@@ -614,7 +620,7 @@ public class MonthCarMenu {
     public void printParkingLotUserList() {
 
         Admin admin = (Admin) mc.getAdmin();
-        ArrayList<ParkingLot> parkingLot = admin.getParkingLot();
+        ArrayList<ParkingLot> parkingLot = admin.getParkingLotList();
         MechanicalParkingLot m = null;
         DriveInParkingLot d = null;
         ArrayList<UserInfo> mUserList = null;
@@ -750,14 +756,14 @@ public class MonthCarMenu {
      * -> mc에서 해당 차량 번호로 대조하여 있으면 삭제 / 없으면 삭제에 실패했습니다 출력 후 다시 차량번호 입력 받기
      * */
     public void removeVehicle() {
-        while (true){
+        while (true) {
             this.printVehicle();
             System.out.print("삭제할 차량 번호 입력(띄어 쓰기 x) : ");
             String licensePlateNumber = sc.nextLine();
-            if(mc.removeVehicle(licensePlateNumber)){
-                System.out.println(licensePlateNumber+ " 차량을 삭제 했습니다.");
+            if (mc.removeVehicle(licensePlateNumber)) {
+                System.out.println(licensePlateNumber + " 차량을 삭제 했습니다.");
                 return;
-            }else System.out.println(licensePlateNumber + "차량이 존재하지 않습니다. 확인후 다시 시도해주세요.");
+            } else System.out.println(licensePlateNumber + "차량이 존재하지 않습니다. 확인후 다시 시도해주세요.");
         }
     }
 
@@ -772,7 +778,7 @@ public class MonthCarMenu {
         System.out.print("수정하고자 하는 차량 선택 : ");
         int selectVehicleIndex = sc.nextInt();
         sc.nextLine();
-        while(true){
+        while (true) {
             System.out.println("수정하고자 하는 항목을 선택하세요.");
             System.out.println("1. 차량 번호");
             System.out.println("2. 차량 종류");
@@ -785,59 +791,59 @@ public class MonthCarMenu {
             System.out.print("항목 선택 : ");
             int select = sc.nextInt();
             sc.nextLine();
-            switch (select){
+            switch (select) {
                 case 1:
                     System.out.print("수정할 차량 번호 (띄어쓰기 x) : ");
                     String licensePlateNumber = sc.nextLine();
-                    if(mc.modifyVehicle(selectVehicleIndex,select,licensePlateNumber)){
+                    if (mc.modifyVehicle(selectVehicleIndex, select, licensePlateNumber)) {
                         System.out.println("차량 번호 정보가 수정되었습니다.");
-                    }else System.out.println("차량 번호 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    } else System.out.println("차량 번호 정보 수정에 실패하였습니다. 다시 시도해주세요.");
                     break;
                 case 2:
                     System.out.print("수정할 차량 종류 : ");
                     String vehicleType = sc.nextLine();
-                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleType)){
+                    if (mc.modifyVehicle(selectVehicleIndex, select, vehicleType)) {
                         System.out.println("차량 종류 정보가 수정되었습니다.");
-                    }else System.out.println("차량 종류 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    } else System.out.println("차량 종류 정보 수정에 실패하였습니다. 다시 시도해주세요.");
                     break;
                 case 3:
                     System.out.print("수정할 차량 모델명 : ");
                     String vehicleModel = sc.nextLine();
-                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleModel)){
+                    if (mc.modifyVehicle(selectVehicleIndex, select, vehicleModel)) {
                         System.out.println("차량 모델명 정보가 수정되었습니다.");
-                    }else System.out.println("차량 모델명 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    } else System.out.println("차량 모델명 정보 수정에 실패하였습니다. 다시 시도해주세요.");
                     break;
                 case 4:
                     System.out.print("수정할 차량 무게 : ");
                     int vehicleWeight = sc.nextInt();
                     sc.nextLine();
-                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleWeight)){
+                    if (mc.modifyVehicle(selectVehicleIndex, select, vehicleWeight)) {
                         System.out.println("차량 무게 정보가 수정되었습니다.");
-                    }else System.out.println("차량 무게 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    } else System.out.println("차량 무게 정보 수정에 실패하였습니다. 다시 시도해주세요.");
                     break;
                 case 5:
                     System.out.print("수정할 차량 전장 : ");
                     int vehicleLength = sc.nextInt();
                     sc.nextLine();
-                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleLength)){
+                    if (mc.modifyVehicle(selectVehicleIndex, select, vehicleLength)) {
                         System.out.println("차량 전장 정보가 수정되었습니다.");
-                    }else System.out.println("차량 전장 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    } else System.out.println("차량 전장 정보 수정에 실패하였습니다. 다시 시도해주세요.");
                     break;
                 case 6:
                     System.out.print("수정할 차량 전폭 : ");
                     int vehicleSpan = sc.nextInt();
                     sc.nextLine();
-                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleSpan)){
+                    if (mc.modifyVehicle(selectVehicleIndex, select, vehicleSpan)) {
                         System.out.println("차량 전폭 정보가 수정되었습니다.");
-                    }else System.out.println("차량 전폭 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    } else System.out.println("차량 전폭 정보 수정에 실패하였습니다. 다시 시도해주세요.");
                     break;
                 case 7:
                     System.out.print("수정할 차량 높이 : ");
                     int vehicleHeight = sc.nextInt();
                     sc.nextLine();
-                    if(mc.modifyVehicle(selectVehicleIndex,select,vehicleHeight)){
+                    if (mc.modifyVehicle(selectVehicleIndex, select, vehicleHeight)) {
                         System.out.println("차량 높이 정보가 수정되었습니다.");
-                    }else System.out.println("차량 높이 정보 수정에 실패하였습니다. 다시 시도해주세요.");
+                    } else System.out.println("차량 높이 정보 수정에 실패하였습니다. 다시 시도해주세요.");
                     break;
                 case 9:
                     return;
@@ -845,5 +851,249 @@ public class MonthCarMenu {
                     System.out.println("잘 못 입력하셨습니다. 다시 입력해주세요.");
             }
         }
+    }
+
+    // 주차장 상세 정보 조회
+    /*
+     * mc 에서 Admin의 parkingLotList를 가져와 출력한다.
+     * */
+    public void viewParkingLotDetails() {
+        Admin admin = mc.getAdmin();
+        ArrayList<ParkingLot> parkingLotList = admin.getParkingLotList();
+        for (int i = 0; i < parkingLotList.size(); i++) {
+            if (parkingLotList.get(i) instanceof MechanicalParkingLot) {
+                MechanicalParkingLot m = (MechanicalParkingLot) parkingLotList.get(i);
+                System.out.printf("%d \t| %s", i, m);
+            } else if (parkingLotList.get(i) instanceof DriveInParkingLot) {
+                DriveInParkingLot d = (DriveInParkingLot) parkingLotList.get(i);
+                System.out.printf("%d \t| %s", i, d);
+            }
+        }
+    }
+
+    // 주차장 추가
+    public void addParkingLot() {
+        Admin admin = mc.getAdmin();
+        ParkingLot existingParkingInfo = admin.getParkingLotList().get(0);
+        this.viewParkingLotDetails();
+        int select;
+        while (true) {
+            int width, mheight, dheight, length, weight, dtotalParkingSpace, dregisterCount, mtotalParkingSpace, mregisterCount;
+            System.out.println("주차장 종류를 입력해주세요");
+            System.out.println("1. 기계식 주차장");
+            System.out.println("2. 자주식 주차장");
+            System.out.println("3. 기계식과 자주식 주차장");
+            System.out.print("주차장 종류 : ");
+            select = sc.nextInt();
+            sc.nextLine();
+            switch (select) {
+                case 1:
+                    System.out.println("기계식 주차장의 제한 사항");
+                    System.out.print("제한 너비 : ");
+                    width = sc.nextInt();
+                    System.out.print("제한 높이 : ");
+                    mheight = sc.nextInt();
+                    System.out.print("제한 길이 : ");
+                    length = sc.nextInt();
+                    System.out.print("제한 무게 : ");
+                    weight = sc.nextInt();
+                    System.out.print("총 주차 면 수 : ");
+                    mtotalParkingSpace = sc.nextInt();
+                    System.out.print("현재 등록 대수 : ");
+                    mregisterCount = sc.nextInt();
+                    if (mc.addParkingLot(new MechanicalParkingLot(existingParkingInfo.getParkingLotId(), existingParkingInfo.getParkingLotName(), existingParkingInfo.getParkingLotAddress(),
+                            width, mheight, length, weight, mtotalParkingSpace, mregisterCount,mc.getTp().getMechanicalParkingLotCount() + 1))) {
+                        System.out.println("기계식 주차장 등록에 성공했습니다.");
+                    } else System.out.println("기계식 주차장 등록에 실패하였습니다. 다시 입력해주세요.");
+                    return;
+                case 2:
+                    System.out.println("자주식 주차장의 제한 사항");
+                    System.out.print("제한 높이 : ");
+                    dheight = sc.nextInt();
+                    System.out.print("총 주차 면 수 : ");
+                    dtotalParkingSpace = sc.nextInt();
+                    System.out.print("현재 등록 대수 : ");
+                    dregisterCount = sc.nextInt();
+                    if (mc.addParkingLot(new DriveInParkingLot(existingParkingInfo.getParkingLotId(), existingParkingInfo.getParkingLotName(), existingParkingInfo.getParkingLotAddress(),
+                            dheight, dtotalParkingSpace, dregisterCount, mc.getTp().getDrivingParkingLotCount() + 1))) {
+                        System.out.println("자주식 주차장 등록에 성공했습니다.");
+                    } else System.out.println("자주식 주차장 등록에 실패하였습니다. 다시 입력해주세요.");
+                    return;
+                case 3:
+                    System.out.println("기계식 주차장의 제한 사항");
+                    System.out.print("제한 너비 : ");
+                    width = sc.nextInt();
+                    System.out.print("제한 높이 : ");
+                    mheight = sc.nextInt();
+                    System.out.print("제한 길이 : ");
+                    length = sc.nextInt();
+                    System.out.print("제한 무게 : ");
+                    weight = sc.nextInt();
+                    System.out.print("총 주차 면 수 : ");
+                    mtotalParkingSpace = sc.nextInt();
+                    System.out.print("현재 등록 대수 : ");
+                    mregisterCount = sc.nextInt();
+                    System.out.println("자주식 주차장의 제한 사항");
+                    System.out.print("제한 높이 : ");
+                    dheight = sc.nextInt();
+                    System.out.print("총 주차 면 수 : ");
+                    dtotalParkingSpace = sc.nextInt();
+                    System.out.print("현재 등록 대수 : ");
+                    dregisterCount = sc.nextInt();
+                    if (mc.addParkingLot(new MechanicalParkingLot(existingParkingInfo.getParkingLotId(), existingParkingInfo.getParkingLotName(), existingParkingInfo.getParkingLotAddress(),
+                            width, mheight, length, weight, mtotalParkingSpace, mregisterCount,mc.getTp().getMechanicalParkingLotCount() + 1))) {
+                        System.out.println("기계식 주차장 등록에 성공했습니다.");
+                    } else System.out.println("기계식 주차장 등록에 실패하였습니다. 다시 입력해주세요.");
+                    if (mc.addParkingLot(new DriveInParkingLot(existingParkingInfo.getParkingLotId(), existingParkingInfo.getParkingLotName(), existingParkingInfo.getParkingLotAddress(),
+                            dheight, dtotalParkingSpace, dregisterCount,mc.getTp().getDrivingParkingLotCount() + 1))) {
+                        System.out.println("자주식 주차장 등록에 성공했습니다.");
+                    } else System.out.println("자주식 주차장 등록에 실패하였습니다. 다시 입력해주세요.");
+                    return;
+                default:
+                    System.out.println("잘 못 입력하셨습니다. 다시 입력해주세요");
+            }
+        }
+    }
+
+    // 주차장 정보 수정
+    /*
+    * viewParkingLotDetails() 메서드로 주차장을 출력 -> 수정하고자하는  주차장 선택
+    * -> 수정하고자하는 항목 선택 -> 수정할 정보 입력 -> 수정
+    * */
+    public void editParkingLotInfo() {
+        this.viewParkingLotDetails();
+        int selectItem;
+        Admin admin = mc.getAdmin();
+        ArrayList<ParkingLot> parkingLotList =  admin.getParkingLotList();
+        System.out.print("수정할 주차장 선택 : ");
+        int selectIndex = sc.nextInt();
+        sc.nextLine();
+        while (true){
+            System.out.println("수정할 항목을 선택하세요.");
+            if(parkingLotList.get(selectIndex) instanceof MechanicalParkingLot){
+                System.out.println("1. 제한 너비");
+                System.out.println("2. 제한 높이");
+                System.out.println("3. 제한 길이");
+                System.out.println("4. 제한 무게");
+                System.out.println("5. 총 주차 공간");
+                System.out.println("6. 현재 등록 대수");
+                System.out.println("9. 이전 메뉴로 이동");
+                System.out.print("항목 선택 : ");
+                selectItem = sc.nextInt();
+                switch (selectItem) {
+                    case 1:
+                        System.out.println("--제한 너비 수정--");
+                        System.out.print("수정할 제한 너비 : ");
+                        Integer width = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,width)){
+                            System.out.println("제한 너비를 수정했습니다.");
+                        }else System.out.println("제한 너비 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 2:
+                        System.out.println("--제한 높이 수정--");
+                        System.out.print("수정할 제한 높이 : ");
+                        Integer height = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,height)){
+                            System.out.println("제한 높이를 수정했습니다.");
+                        }else System.out.println("제한 높이 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 3:
+                        System.out.println("--제한 길이 수정--");
+                        System.out.print("수정할 제한 길이 : ");
+                        Integer length = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,length)){
+                            System.out.println("제한 길이를 수정했습니다.");
+                        }else System.out.println("제한 길이 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 4:
+                        System.out.println("--제한 무게 수정--");
+                        System.out.print("수정할 제한 무게 : ");
+                        Integer weight = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,weight)){
+                            System.out.println("제한 무게를 수정했습니다.");
+                        }else System.out.println("제한 무게 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 5:
+                        System.out.println("--총 주차 공간 수정--");
+                        System.out.print("수정할 총 주차 공간 : ");
+                        Integer totalParkingSpace = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,totalParkingSpace)){
+                            System.out.println("총 주차 공간을 수정했습니다.");
+                        }else System.out.println("총 주차 공간 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 6:
+                        System.out.println("--현재 등록 대수 수정--");
+                        System.out.print("수정할 현재 등록 대수 : ");
+                        Integer registerCount = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,registerCount)){
+                            System.out.println("현재 등록 대수를 수정했습니다.");
+                        }else System.out.println("현재 등록 대수 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 9:
+                        sc.nextLine();
+                        return;
+                }
+            }else if (parkingLotList.get(selectIndex) instanceof DriveInParkingLot){
+                System.out.println("1. 제한 높이");
+                System.out.println("2. 총 주차 공간");
+                System.out.println("3. 현재 등록 대수");
+                System.out.println("9. 이전 메뉴로 이동");
+                selectItem = sc.nextInt();
+                sc.nextLine();
+                switch (selectItem) {
+                    case 1: System.out.println("--제한 높이 수정--");
+                        System.out.print("수정할 제한 높이 : ");
+                        Integer height = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,height)){
+                            System.out.println("제한 높이를 수정했습니다.");
+                        }else System.out.println("제한 높이 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 2:
+                        System.out.println("--총 주차 공간 수정--");
+                        System.out.print("수정할 총 주차 공간 : ");
+                        Integer totalParkingSpace = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,totalParkingSpace)){
+                            System.out.println("총 주차 공간을 수정했습니다.");
+                        }else System.out.println("총 주차 공간 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 3:
+                        System.out.println("--현재 등록 대수 수정--");
+                        System.out.print("수정할 현재 등록 대수 : ");
+                        Integer registerCount = sc.nextInt();
+                        if(mc.editParkingLotInfo(selectIndex,selectItem,registerCount)){
+                            System.out.println("현재 등록 대수를 수정했습니다.");
+                        }else System.out.println("현재 등록 대수 수정에 실패했습니다. 다시 시도해주세요.");
+                        break;
+                    case 9:
+                        sc.nextLine();
+                        return;
+                }
+            }
+        }
+    }
+
+    // 주차장 삭제
+    /*
+    * 주차장을 구매한 바우처도 함께 삭제 필요
+    * */
+    public void removeParkingLot() {
+        while (true) {
+            this.viewParkingLotDetails();
+            System.out.print("삭제할 주차장 선택 : ");
+            int selectParkingLot = sc.nextInt();
+            if (mc.removeParkingLot(selectParkingLot)) {
+                System.out.println("해당 주차장을 삭제 했습니다.");
+                return;
+            } else System.out.println("해당 주차장 삭제에 실패했습니다. 다시 시도해주세요.");
+        }
+    }
+    // 주차권 말소
+    /*
+    * 주차권 사용자의 voucherExpirationDate 를 현재 시간으로 바꾼다.
+    * ->  Admin의 parkingLotUserList에서 해당 사용자를 삭제한다.
+    *
+    * */
+    public void manageParkingVoucher(){
+
     }
 }

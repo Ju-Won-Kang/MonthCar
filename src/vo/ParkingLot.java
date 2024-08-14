@@ -44,10 +44,8 @@ public class ParkingLot implements Serializable {
 
     @Override
     public String toString() {
-        return "ParkingLot{" +
-                "parkingLotId=" + parkingLotId +
-                ", parkingLotName='" + parkingLotName + '\'' +
-                ", parkingLotAddress='" + parkingLotAddress + '\'' +
-                '}';
+        return "주차장 ID : " + parkingLotId +
+                ", 주차장 이름 : '" + parkingLotName + '\'' +
+                ", 주차장 주소 : '" + parkingLotAddress + '\'';
     }
 }

@@ -3,7 +3,6 @@ package controller;
 import vo.*;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -40,7 +39,7 @@ public class MonthCarController {
             if (((Admin) user).getId().equals(id)) {
                 if (((Admin) user).getPw().equals(pw)) {
                     ArrayList<ParkingLot> parkingLotList = tp.getTotalParkingLotList();
-                    ArrayList<ParkingLot> adminParkingLotList = AdminUser.getParkingLot();
+                    ArrayList<ParkingLot> adminParkingLotList = AdminUser.getParkingLotList();
                     MechanicalParkingLot adminMParkingLot = null;
                     DriveInParkingLot adminDParkingLot = null;
                     int adminMParkingLotNum = 0, adminDParkingLotNum = 0;
@@ -56,15 +55,18 @@ public class MonthCarController {
                     // totalparkingLotList 와 Admin 객체의 ParkingLot 필드 동기화
                     for (ParkingLot parkingLot : parkingLotList) {
                         if (parkingLot instanceof MechanicalParkingLot) {
-                            MechanicalParkingLot m = (MechanicalParkingLot) parkingLot;
-
-                            if (m.getParkingLotId() == adminMParkingLot.getParkingLotId()) {
-                                adminParkingLotList.set(adminMParkingLotNum, m);
+                            if (adminMParkingLot != null) {
+                                MechanicalParkingLot m = (MechanicalParkingLot) parkingLot;
+                                if (m.getParkingLotId() == adminMParkingLot.getParkingLotId()) {
+                                    adminParkingLotList.set(adminMParkingLotNum, m);
+                                }
                             }
                         } else if (parkingLot instanceof DriveInParkingLot) {
-                            DriveInParkingLot d = (DriveInParkingLot) parkingLot;
-                            if (d.getParkingLotId() == adminDParkingLot.getParkingLotId()) {
-                                adminParkingLotList.set(adminDParkingLotNum, d);
+                            if (adminDParkingLot != null) {
+                                DriveInParkingLot d = (DriveInParkingLot) parkingLot;
+                                if (d.getParkingLotId() == adminDParkingLot.getParkingLotId()) {
+                                    adminParkingLotList.set(adminDParkingLotNum, d);
+                                }
                             }
                         }
                     }
@@ -121,7 +123,7 @@ public class MonthCarController {
     public void signUpAdmin(Admin admin) {
         this.user = admin;
         if (saveUser(admin.getId())) {
-            tp.updateTotalParkingLot(admin.getParkingLot());
+            tp.addTotalParkingLot(admin.getParkingLotList());
             System.out.println(admin.getName() + "님 회원 가입이 되었습니다.");
         }
 
@@ -185,17 +187,6 @@ public class MonthCarController {
         }
         return false;
     }
-//    public boolean userUpdate(UserVehicle vehicle) {
-//        if (this.user instanceof User) {
-//            ((User) this.user).addVehicle(vehicle);
-//            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())))) {
-//                oos.writeObject(this.user);
-//            } catch (IOException ex) {
-//                throw new RuntimeException(ex);
-//            }
-//        }
-//        return true;
-//    }
 
     public TotalParkingLot getTp() {
         return tp;
@@ -302,6 +293,7 @@ public class MonthCarController {
             return 1;
         } else return 0;
     }
+
     public boolean removeVehicle(String licensePlateNumber) {
         User user = (User) this.user;
         LinkedList<UserVehicle> userVehicleLinkedList = user.getVehicleList();
@@ -314,47 +306,145 @@ public class MonthCarController {
         }
         return false;
     }
-    public boolean modifyVehicle(int selectVehicleIndex,int select, Object modifyObject){
+
+    public boolean modifyVehicle(int selectVehicleIndex, int select, Object modifyObject) {
         LinkedList<UserVehicle> userVehicleLinkedList = ((User) this.user).getVehicleList();
         UserVehicle userVehicle = userVehicleLinkedList.get(selectVehicleIndex);
-        switch (select){
+        switch (select) {
             case 1:
-                userVehicle.setLicensePlateNumber((String)modifyObject);
+                userVehicle.setLicensePlateNumber((String) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 2:
-                userVehicle.setVehicleType((String)modifyObject);
+                userVehicle.setVehicleType((String) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 3:
-                userVehicle.setVehicleModel((String)modifyObject);
+                userVehicle.setVehicleModel((String) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 4:
-                userVehicle.setCarWeight((int)modifyObject);
+                userVehicle.setCarWeight((int) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 5:
-                userVehicle.setVehicleLength((int)modifyObject);
+                userVehicle.setVehicleLength((int) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 6:
-                userVehicle.setVehicleSpan((int)modifyObject);
+                userVehicle.setVehicleSpan((int) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 7:
-                userVehicle.setVehicleHeight((int)modifyObject);
+                userVehicle.setVehicleHeight((int) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             default:
                 return false;
         }
+    }
+
+    public boolean addParkingLot(Object parkingLot) {
+        Admin admin = (Admin) this.user;
+        if (parkingLot instanceof MechanicalParkingLot) {
+            MechanicalParkingLot m = (MechanicalParkingLot) parkingLot;
+            if (admin.addParkingLot(m)) {
+                return this.userUpdate();
+            }
+        } else if (parkingLot instanceof DriveInParkingLot) {
+            DriveInParkingLot d = (DriveInParkingLot) parkingLot;
+            if (admin.addParkingLot(d)) {
+                return this.userUpdate();
+            }
+        }
+        return false;
+    }
+
+    /*
+     * totalParkingLotList 정보도 최신화 필요
+     * */
+    public boolean editParkingLotInfo(int selectIndex, int selectItem, Object modifyObject) {
+        Admin admin = (Admin) this.user;
+        ArrayList<ParkingLot> parkingLotList = admin.getParkingLotList();
+        int modifyValue = ((Integer) modifyObject).intValue();
+        if (parkingLotList.get(selectIndex) instanceof MechanicalParkingLot) {
+            MechanicalParkingLot m = (MechanicalParkingLot) parkingLotList.get(selectIndex);
+            switch (selectItem) {
+                case 1:
+                    m.setWidth(modifyValue);
+                    ((Admin) this.user).editParkingLotList(selectIndex, m);
+                    this.tp.editTotalParkingLot(m.getMechanicalParkingIdentificationNumber(), m);
+                    return this.userUpdate();
+                case 2:
+                    m.setHeight(modifyValue);
+                    ((Admin) this.user).editParkingLotList(selectIndex, m);
+                    this.tp.editTotalParkingLot(m.getMechanicalParkingIdentificationNumber(), m);
+                    return this.userUpdate();
+                case 3:
+                    m.setLength(modifyValue);
+                    ((Admin) this.user).editParkingLotList(selectIndex, m);
+                    this.tp.editTotalParkingLot(m.getMechanicalParkingIdentificationNumber(), m);
+                    return this.userUpdate();
+                case 4:
+                    m.setWeight(modifyValue);
+                    ((Admin) this.user).editParkingLotList(selectIndex, m);
+                    this.tp.editTotalParkingLot(m.getMechanicalParkingIdentificationNumber(), m);
+                    return this.userUpdate();
+                case 5:
+                    m.setTotalParkingSpace(modifyValue);
+                    m.setRemainingParkingSpace(modifyValue - m.getRegisterCount());
+                    ((Admin) this.user).editParkingLotList(selectIndex, m);
+                    this.tp.editTotalParkingLot(m.getMechanicalParkingIdentificationNumber(), m);
+                    return this.userUpdate();
+                case 6:
+                    m.setRegisterCount(modifyValue);
+                    m.setRemainingParkingSpace(m.getTotalParkingSpace()-modifyValue);
+                    ((Admin) this.user).editParkingLotList(selectIndex, m);
+                    this.tp.editTotalParkingLot(m.getMechanicalParkingIdentificationNumber(), m);
+                    return this.userUpdate();
+            }
+        } else if (parkingLotList.get(selectIndex) instanceof DriveInParkingLot) {
+            DriveInParkingLot d = (DriveInParkingLot) parkingLotList.get(selectIndex);
+            switch (selectItem) {
+                case 1:
+                    d.setHeight(modifyValue);
+                    ((Admin) this.user).editParkingLotList(selectIndex, d);
+                    this.tp.editTotalParkingLot(d.getDriveInParkingIdentificationNumber(), d);
+                    return this.userUpdate();
+                case 2:
+                    d.setTotalParkingSpace(modifyValue);
+                    d.setRemainingParkingSpace(modifyValue - d.getRegisterCount());
+                    ((Admin) this.user).editParkingLotList(selectIndex, d);
+                    this.tp.editTotalParkingLot(d.getDriveInParkingIdentificationNumber(), d);
+                    return this.userUpdate();
+                case 3:
+                    d.setRegisterCount(modifyValue);
+                    d.setRemainingParkingSpace(d.getTotalParkingSpace() - modifyValue);
+                    ((Admin) this.user).editParkingLotList(selectIndex, d);
+                    this.tp.editTotalParkingLot(d.getDriveInParkingIdentificationNumber(), d);
+                    return this.userUpdate();
+            }
+        }
+        return false;
+    }
+    public boolean removeParkingLot(int selectParkingLotIndex){
+        Admin admin = (Admin) this.user;
+        ArrayList<ParkingLot> parkingLotList = admin.getParkingLotList();
+        ParkingLot oldParkingLot = parkingLotList.remove(selectParkingLotIndex);
+        if( oldParkingLot instanceof MechanicalParkingLot){
+            tp.removeParkingLot(((MechanicalParkingLot)oldParkingLot).getMechanicalParkingIdentificationNumber(),
+                    (MechanicalParkingLot) oldParkingLot);
+        }else if(oldParkingLot instanceof DriveInParkingLot){
+            tp.removeParkingLot(((DriveInParkingLot)oldParkingLot).getDriveInParkingIdentificationNumber(),
+                    (DriveInParkingLot) oldParkingLot);
+        }
+        return this.userUpdate();
     }
 }
