@@ -14,14 +14,6 @@ public class DriveInParkingLot extends ParkingLot implements Serializable {
     public DriveInParkingLot() {
     }
 
-    public int getDriveInParkingIdentificationNumber() {
-        return driveInParkingIdentificationNumber;
-    }
-
-    public void setDriveInParkingIdentificationNumber(int driveInParkingIdentificationNumber) {
-        this.driveInParkingIdentificationNumber = driveInParkingIdentificationNumber;
-    }
-
     public DriveInParkingLot(int parkingLotId, String parkingLotName, String parkingLotAddress,
                              int height, int totalParkingSpace, int registerCount, int driveInParkingIdentificationNumber) {
         super(parkingLotId, parkingLotName, parkingLotAddress);
@@ -29,6 +21,14 @@ public class DriveInParkingLot extends ParkingLot implements Serializable {
         this.totalParkingSpace = totalParkingSpace;
         this.registerCount = registerCount;
         this.remainingParkingSpace = totalParkingSpace - registerCount;
+        this.driveInParkingIdentificationNumber = driveInParkingIdentificationNumber;
+    }
+
+    public int getDriveInParkingIdentificationNumber() {
+        return driveInParkingIdentificationNumber;
+    }
+
+    public void setDriveInParkingIdentificationNumber(int driveInParkingIdentificationNumber) {
         this.driveInParkingIdentificationNumber = driveInParkingIdentificationNumber;
     }
 
@@ -72,7 +72,7 @@ public class DriveInParkingLot extends ParkingLot implements Serializable {
         this.parkingLotUserList = parkingLotUserList;
     }
 
-    public void addParkingLotuserList(UserInfo user) {
+    public void addParkingLotUserList(UserInfo user) {
         if (parkingLotUserList == null) {
             parkingLotUserList = new ArrayList<>();
         }

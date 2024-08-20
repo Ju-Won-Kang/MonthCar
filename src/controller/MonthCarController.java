@@ -32,21 +32,24 @@ public class MonthCarController {
         return -1;
     }
 
+
     public int signInAdmin(String id, String pw) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", id)))) {
-            user = (UserMain) ois.readObject();
+            this.user = (UserMain) ois.readObject();
             Admin AdminUser = (Admin) this.user;
             if (((Admin) user).getId().equals(id)) {
                 if (((Admin) user).getPw().equals(pw)) {
+                    // 로그인시 입력한 ID,PW가 동일 하다면 totalParkingLotList를 최신화 해준다.
                     ArrayList<ParkingLot> parkingLotList = tp.getTotalParkingLotList();
                     ArrayList<ParkingLot> adminParkingLotList = AdminUser.getParkingLotList();
                     MechanicalParkingLot adminMParkingLot = null;
                     DriveInParkingLot adminDParkingLot = null;
-                    int adminMParkingLotNum = 0, adminDParkingLotNum = 0;
+                    int adminMParkingLotCount = 0, adminDParkingLotNum = 0;
+                    // Admin 객체가 가지고 있는 주차장 종류별 개수 카운트
                     for (int i = 0; i < adminParkingLotList.size(); i++) {
                         if (adminParkingLotList.get(i) instanceof MechanicalParkingLot) {
                             adminMParkingLot = (MechanicalParkingLot) adminParkingLotList.get(i);
-                            adminMParkingLotNum = i;
+                            adminMParkingLotCount = i;
                         } else if (adminParkingLotList.get(i) instanceof DriveInParkingLot) {
                             adminDParkingLot = (DriveInParkingLot) adminParkingLotList.get(i);
                             adminDParkingLotNum = i;
@@ -57,8 +60,9 @@ public class MonthCarController {
                         if (parkingLot instanceof MechanicalParkingLot) {
                             if (adminMParkingLot != null) {
                                 MechanicalParkingLot m = (MechanicalParkingLot) parkingLot;
+                                // ParkingLotID를 이용해 Admin 사용자가 관리하는 주차장인지 확인
                                 if (m.getParkingLotId() == adminMParkingLot.getParkingLotId()) {
-                                    adminParkingLotList.set(adminMParkingLotNum, m);
+                                    adminParkingLotList.set(adminMParkingLotCount, m);
                                 }
                             }
                         } else if (parkingLot instanceof DriveInParkingLot) {
@@ -84,52 +88,54 @@ public class MonthCarController {
         return -1;
     }
 
-    /*
-     * User의 [ID].txt 파일을 최신화
-     * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
-     * */
-    public void logoutUser() {
-        User userInfo = (User) this.user;
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", userInfo.getId())))) {
-            oos.writeObject(userInfo);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /*
-     * Admin의 [ID].txt 파일을 최신화
-     * 로그아웃시 실행하게하여 자동으로  최신화 되게 해줌
-     * */
-    public void logoutAdmin() {
-        Admin adminInfo = (Admin) this.user;
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", adminInfo.getId())))) {
-            oos.writeObject(adminInfo);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void signUpUser(User user) {
+    public String signUpUser(User user) {
         this.user = user;
-        saveUser(user.getId());
-        System.out.println(user.getName() + "님 회원 가입이 되었습니다.");
-    }
-
-    public void signUpAdmin(Admin admin) {
-        this.user = admin;
-        if (saveUser(admin.getId())) {
-            tp.addTotalParkingLot(admin.getParkingLotList());
-            System.out.println(admin.getName() + "님 회원 가입이 되었습니다.");
+        if(saveUser()){
+            this.updateUserFile();
+            return user.getName() + "님 회원 가입이 완료 되었습니다.";
+        }else {
+            return "회원 가입에 실패했습니다.";
         }
-
     }
 
-    public boolean saveUser(String id) {
+    public String signUpAdmin(Admin admin) {
+        this.user = admin;
+        if (saveUser()) {
+            tp.addTotalParkingLotList(admin.getParkingLotList());
+            this.updateUserFile();
+            return user.getName() + "님 회원 가입이 완료 되었습니다.";
+        }else {
+            return "회원 가입에 실패했습니다.";
+        }
+    }
+
+    /*
+     * User 및 Admin의 [ID].txt 파일을 최신화
+     * 파일 정보 최신화
+     * */
+    public void updateUserFile() {
+        if (this.user instanceof Admin) {
+            Admin adminInfo = (Admin) this.user;
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", adminInfo.getId())))) {
+                oos.writeObject(adminInfo);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else if (this.user instanceof User) {
+            User userInfo = (User) this.user;
+            try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", userInfo.getId())))) {
+                oos.writeObject(userInfo);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public boolean saveUser() {
         File userDirectory = new File("/Users/jun/Documents/KH/MonthCar/User");
         if (!userDirectory.exists()) {
             if (!userDirectory.mkdirs()) {
@@ -137,8 +143,7 @@ public class MonthCarController {
                 return false;
             }
         }
-
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", id)))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(String.format("/Users/jun/Documents/KH/MonthCar/User/%s.txt", this.user.getId())))) {
             oos.writeObject(this.user);
             return true;
         } catch (IOException e) {
@@ -283,7 +288,7 @@ public class MonthCarController {
         User user = (User) this.user;
         LinkedList<UserVehicle> userVehicleLinkedList = user.getVehicleList();
         for (UserVehicle userVehicle : userVehicleLinkedList) {
-            if (userVehicle.getLicensePlateNumber().equals(licensePlateNumber)) {
+            if (userVehicle.getPlateNumber().equals(licensePlateNumber)) {
                 return -1; // 이미 등록된 차량 번호
             }
         }
@@ -298,7 +303,7 @@ public class MonthCarController {
         User user = (User) this.user;
         LinkedList<UserVehicle> userVehicleLinkedList = user.getVehicleList();
         for (UserVehicle userVehicle : userVehicleLinkedList) {
-            if (userVehicle.getLicensePlateNumber().equals(licensePlateNumber)) {
+            if (userVehicle.getPlateNumber().equals(licensePlateNumber)) {
                 userVehicleLinkedList.remove(userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
@@ -312,7 +317,7 @@ public class MonthCarController {
         UserVehicle userVehicle = userVehicleLinkedList.get(selectVehicleIndex);
         switch (select) {
             case 1:
-                userVehicle.setLicensePlateNumber((String) modifyObject);
+                userVehicle.setPlateNumber((String) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
@@ -327,7 +332,7 @@ public class MonthCarController {
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 4:
-                userVehicle.setCarWeight((int) modifyObject);
+                userVehicle.setVehicleWeight((int) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
@@ -337,7 +342,7 @@ public class MonthCarController {
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
             case 6:
-                userVehicle.setVehicleSpan((int) modifyObject);
+                userVehicle.setVehicleWidth((int) modifyObject);
                 userVehicleLinkedList.set(selectVehicleIndex, userVehicle);
                 ((User) this.user).setVehicleList(userVehicleLinkedList);
                 return this.userUpdate();
@@ -367,9 +372,6 @@ public class MonthCarController {
         return false;
     }
 
-    /*
-     * totalParkingLotList 정보도 최신화 필요
-     * */
     public boolean editParkingLotInfo(int selectIndex, int selectItem, Object modifyObject) {
         Admin admin = (Admin) this.user;
         ArrayList<ParkingLot> parkingLotList = admin.getParkingLotList();
@@ -405,7 +407,7 @@ public class MonthCarController {
                     return this.userUpdate();
                 case 6:
                     m.setRegisterCount(modifyValue);
-                    m.setRemainingParkingSpace(m.getTotalParkingSpace()-modifyValue);
+                    m.setRemainingParkingSpace(m.getTotalParkingSpace() - modifyValue);
                     ((Admin) this.user).editParkingLotList(selectIndex, m);
                     this.tp.editTotalParkingLot(m.getMechanicalParkingIdentificationNumber(), m);
                     return this.userUpdate();
@@ -434,17 +436,38 @@ public class MonthCarController {
         }
         return false;
     }
-    public boolean removeParkingLot(int selectParkingLotIndex){
+
+    public boolean removeParkingLot(int selectParkingLotIndex) {
         Admin admin = (Admin) this.user;
         ArrayList<ParkingLot> parkingLotList = admin.getParkingLotList();
         ParkingLot oldParkingLot = parkingLotList.remove(selectParkingLotIndex);
-        if( oldParkingLot instanceof MechanicalParkingLot){
-            tp.removeParkingLot(((MechanicalParkingLot)oldParkingLot).getMechanicalParkingIdentificationNumber(),
+        if (oldParkingLot instanceof MechanicalParkingLot) {
+            tp.removeParkingLot(((MechanicalParkingLot) oldParkingLot).getMechanicalParkingIdentificationNumber(),
                     (MechanicalParkingLot) oldParkingLot);
-        }else if(oldParkingLot instanceof DriveInParkingLot){
-            tp.removeParkingLot(((DriveInParkingLot)oldParkingLot).getDriveInParkingIdentificationNumber(),
+        } else if (oldParkingLot instanceof DriveInParkingLot) {
+            tp.removeParkingLot(((DriveInParkingLot) oldParkingLot).getDriveInParkingIdentificationNumber(),
                     (DriveInParkingLot) oldParkingLot);
         }
         return this.userUpdate();
     }
+
+    // 사용자가 월주차권 구매시 선택한 주차장 종류와 선택한 주차장이 일치하는지 확인
+    public boolean checkSelectedParkingLotType(int parkingLotType, int choice) {
+        ArrayList<ParkingLot> parkingLotList = this.getTp().getTotalParkingLotList();
+        switch (parkingLotType) {
+            case 1: // 기계식 주차장
+                if (parkingLotList.get(choice) instanceof MechanicalParkingLot) {
+                    return true;
+                } else return false;
+            case 2: // 자주식 주차장
+                if (parkingLotList.get(choice) instanceof DriveInParkingLot) {
+                    return true;
+                } else return false;
+            case 3: // 기계식 & 자주식 주차장
+                return true;
+            default:
+                return false;
+        }
+    }
+
 }

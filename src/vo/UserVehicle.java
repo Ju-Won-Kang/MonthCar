@@ -3,33 +3,33 @@ package vo;
 import java.io.Serializable;
 
 public class UserVehicle implements Serializable {
-    private String licensePlateNumber; // 차량 번호
+    private String plateNumber; // 차량 번호
     private String vehicleType; // 차량종류
     private String vehicleModel; // 모델명
-    private int carWeight; // 차량 무게
+    private int vehicleWeight; // 차량 무게
     private int vehicleLength; // 차량 전장
-    private int vehicleSpan; // 차량 전폭
+    private int vehicleWidth; // 차량 전폭
     private int vehicleHeight; // 차량 높이
 
     public UserVehicle() {
     }
 
-    public UserVehicle(String licensePlateNumber, String vehicleType, String vehicleModel, int carWeight, int vehicleLength, int vehicleSpan, int vehicleHeight) {
-        this.licensePlateNumber = licensePlateNumber;
+    public UserVehicle(String plateNumber, String vehicleType, String vehicleModel, int vehicleWeight, int vehicleLength, int vehicleWidth, int vehicleHeight) {
+        this.plateNumber = plateNumber;
         this.vehicleType = vehicleType;
         this.vehicleModel = vehicleModel;
-        this.carWeight = carWeight;
+        this.vehicleWeight = vehicleWeight;
         this.vehicleLength = vehicleLength;
-        this.vehicleSpan = vehicleSpan;
+        this.vehicleWidth = vehicleWidth;
         this.vehicleHeight = vehicleHeight;
     }
 
-    public String getLicensePlateNumber() {
-        return licensePlateNumber;
+    public String getPlateNumber() {
+        return plateNumber;
     }
 
-    public void setLicensePlateNumber(String licensePlateNumber) {
-        this.licensePlateNumber = licensePlateNumber;
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
     public String getVehicleType() {
@@ -50,12 +50,12 @@ public class UserVehicle implements Serializable {
 
 
 
-    public int getCarWeight() {
-        return carWeight;
+    public int getVehicleWeight() {
+        return vehicleWeight;
     }
 
-    public void setCarWeight(int carWeight) {
-        this.carWeight = carWeight;
+    public void setVehicleWeight(int vehicleWeight) {
+        this.vehicleWeight = vehicleWeight;
     }
 
     public int getVehicleLength() {
@@ -66,12 +66,12 @@ public class UserVehicle implements Serializable {
         this.vehicleLength = vehicleLength;
     }
 
-    public int getVehicleSpan() {
-        return vehicleSpan;
+    public int getVehicleWidth() {
+        return vehicleWidth;
     }
 
-    public void setVehicleSpan(int vehicleSpan) {
-        this.vehicleSpan = vehicleSpan;
+    public void setVehicleWidth(int vehicleWidth) {
+        this.vehicleWidth = vehicleWidth;
     }
 
     public int getVehicleHeight() {
@@ -84,12 +84,12 @@ public class UserVehicle implements Serializable {
 
     @Override
     public String toString() {
-        return "차량 번호 : '" + licensePlateNumber + '\'' +
+        return "차량 번호 : '" + plateNumber + '\'' +
                 ", 차량 종류 : '" + vehicleType + '\'' +
                 ", 모델명 : '" + vehicleModel + '\'' +
-                ", 차량 무게 : " + carWeight + " (kg)"+
+                ", 차량 무게 : " + vehicleWeight + " (kg)"+
                 ", 차량 전장 : " + vehicleLength + " (mm)" +
-                ", 차량 전폭 : " + vehicleSpan + " (mm)" +
+                ", 차량 전폭 : " + vehicleWidth + " (mm)" +
                 ", 차량 높이 : " + vehicleHeight + " (mm)"
                 ;
     }

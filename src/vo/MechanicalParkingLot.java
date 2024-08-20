@@ -17,24 +17,6 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
     public MechanicalParkingLot() {
     }
 
-    public MechanicalParkingLot(int width, int height, int length, int weight, int totalParkingSpace) {
-        this.width = width;
-        this.height = height;
-        this.length = length;
-        this.weight = weight;
-        this.totalParkingSpace = totalParkingSpace;
-        this.registerCount = registerCount;
-        this.remainingParkingSpace = totalParkingSpace - registerCount;
-    }
-
-    public int getMechanicalParkingIdentificationNumber() {
-        return mechanicalParkingIdentificationNumber;
-    }
-
-    public void setMechanicalParkingIdentificationNumber(int mechanicalParkingIdentificationNumber) {
-        this.mechanicalParkingIdentificationNumber = mechanicalParkingIdentificationNumber;
-    }
-
     public MechanicalParkingLot(int parkingLotId, String parkingLotName, String parkingLotAddress,
                                 int width, int height, int length, int weight, int totalParkingSpace, int registerCount, int mechanicalParkingIdentificationNumber) {
         super(parkingLotId, parkingLotName, parkingLotAddress);
@@ -47,6 +29,16 @@ public class MechanicalParkingLot extends ParkingLot implements Serializable {
         this.remainingParkingSpace = totalParkingSpace - registerCount;
         this.mechanicalParkingIdentificationNumber = mechanicalParkingIdentificationNumber;
     }
+
+
+    public int getMechanicalParkingIdentificationNumber() {
+        return mechanicalParkingIdentificationNumber;
+    }
+
+    public void setMechanicalParkingIdentificationNumber(int mechanicalParkingIdentificationNumber) {
+        this.mechanicalParkingIdentificationNumber = mechanicalParkingIdentificationNumber;
+    }
+
 
     public int getWidth() {
         return width;

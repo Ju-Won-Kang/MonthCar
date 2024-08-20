@@ -7,18 +7,21 @@ public class UserInfo implements Serializable {
     private String id;
     private String name;
     private String phoneNumber;
-    private String licensePlateNumber; // 차량 번호
+    private String plateNumber; // 차량 번호
     private String vehicleType; // 차량종류
     private String vehicleModel; // 모델명
     private LocalDateTime voucherPurchaseDate; // 월주차권 구매 날짜
     private LocalDateTime voucherExpirationDate; // 월주차권 만료 날짜
 
-    public UserInfo(String id, String name, String phoneNumber, String licensePlateNumber,
-                    String vehicleType, String vehicleModel,LocalDateTime voucherPurchaseDate,LocalDateTime voucherExpirationDate) {
+    public UserInfo() {
+    }
+
+    public UserInfo(String id, String name, String phoneNumber, String plateNumber,
+                    String vehicleType, String vehicleModel, LocalDateTime voucherPurchaseDate, LocalDateTime voucherExpirationDate) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.licensePlateNumber = licensePlateNumber;
+        this.plateNumber = plateNumber;
         this.vehicleType = vehicleType;
         this.vehicleModel = vehicleModel;
         this.voucherPurchaseDate = voucherPurchaseDate;
@@ -49,12 +52,12 @@ public class UserInfo implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getLicensePlateNumber() {
-        return licensePlateNumber;
+    public String getPlateNumber() {
+        return plateNumber;
     }
 
-    public void setLicensePlateNumber(String licensePlateNumber) {
-        this.licensePlateNumber = licensePlateNumber;
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
     public String getVehicleType() {
